@@ -15,3 +15,4 @@ class AiCvAnalyzerService
         return $this->provider->analyze($cvText, 'cv_analysis');
     }
 }
+

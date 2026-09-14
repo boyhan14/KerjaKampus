@@ -21,16 +21,13 @@ use Illuminate\Support\Facades\Route;
 // ─── Public Pages ───────────────────────────────────────────
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/talents', [PublicController::class, 'talents'])->name('talents.index');
+Route::redirect('/talent', '/talents');
 Route::get('/talents/{username}', [ProfileController::class, 'publicProfile'])->name('talents.show');
 Route::get('/how-it-works', [PublicController::class, 'howItWorks'])->name('how-it-works');
 Route::get('/pricing', [PublicController::class, 'pricing'])->name('pricing');
 
 // ─── Public Jobs ────────────────────────────────────────────
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
-Route::get('/jobs/{slug}', [JobController::class, 'show'])->name('jobs.show');
-
-// ─── Public Portfolio ───────────────────────────────────────
-Route::get('/portfolio/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // ─── Auth Routes ────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -108,6 +105,10 @@ Route::middleware('auth')->group(function () {
     // Reports
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 });
+
+// ─── Dynamic Slugs (Placed after specific routes to avoid collision) ───
+Route::get('/jobs/{slug}', [JobController::class, 'show'])->name('jobs.show');
+Route::get('/portfolio/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // ─── Admin Routes ───────────────────────────────────────────
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

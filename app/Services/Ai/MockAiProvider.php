@@ -52,3 +52,4 @@ class MockAiProvider implements AiProviderInterface
         };
     }
 }
+

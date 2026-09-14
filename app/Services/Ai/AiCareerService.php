@@ -19,3 +19,4 @@ class AiCareerService
         return $this->provider->analyze($input, 'career_guidance');
     }
 }
+

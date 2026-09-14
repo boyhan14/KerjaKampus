@@ -16,3 +16,4 @@ class AiPortfolioWriterService
         return $this->provider->generateText($prompt);
     }
 }
+

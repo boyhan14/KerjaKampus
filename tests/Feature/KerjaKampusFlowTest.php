@@ -244,11 +244,55 @@ class KerjaKampusFlowTest extends TestCase
         ]);
     }
 
-    public function test_unauthorized_user_cannot_access_admin_dashboard()
+    public function test_all_public_pages_render_successfully()
+    {
+        $this->get('/')->assertStatus(200);
+        $this->get('/jobs')->assertStatus(200);
+        $this->get('/talents')->assertStatus(200);
+        $this->get('/talents/' . $this->talent->username)->assertStatus(200);
+        $this->get('/how-it-works')->assertStatus(200);
+        $this->get('/pricing')->assertStatus(200);
+        $this->get('/login')->assertStatus(200);
+        $this->get('/register')->assertStatus(200);
+    }
+
+    public function test_talent_pages_render_successfully()
     {
         $this->actingAs($this->talent);
 
-        $response = $this->get('/admin');
-        $response->assertStatus(403);
+        $this->get('/dashboard/talent')->assertStatus(200);
+        $this->get('/profile')->assertStatus(200);
+        $this->get('/profile/edit')->assertStatus(200);
+        $this->get('/skills')->assertStatus(200);
+        $this->get('/my-portfolio')->assertStatus(200);
+        $this->get('/portfolio/create')->assertStatus(200);
+        $this->get('/my-applications')->assertStatus(200);
+        $this->get('/projects')->assertStatus(200);
+        $this->get('/reviews')->assertStatus(200);
+        $this->get('/notifications')->assertStatus(200);
+    }
+
+    public function test_client_pages_render_successfully()
+    {
+        $this->actingAs($this->client);
+
+        $this->get('/dashboard/client')->assertStatus(200);
+        $this->get('/my-jobs')->assertStatus(200);
+        $this->get('/jobs/create')->assertStatus(200);
+        $this->get('/projects')->assertStatus(200);
+    }
+
+    public function test_admin_pages_render_successfully()
+    {
+        $this->actingAs($this->admin);
+
+        $this->get('/admin')->assertStatus(200);
+        $this->get('/admin/users')->assertStatus(200);
+        $this->get('/admin/jobs')->assertStatus(200);
+        $this->get('/admin/skills')->assertStatus(200);
+        $this->get('/admin/categories')->assertStatus(200);
+        $this->get('/admin/reports')->assertStatus(200);
+        $this->get('/admin/reviews')->assertStatus(200);
     }
 }
+
