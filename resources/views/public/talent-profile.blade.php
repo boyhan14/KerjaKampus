@@ -33,21 +33,34 @@
                             <div class="flex justify-center items-center gap-4 mb-6">
                                 <div class="text-center">
                                     <div class="flex items-center text-yellow-400">
+                                        @php $avgRating = $talent->averageRating(); @endphp
                                         <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                        <span class="text-gray-900 font-bold ml-1">{{ number_format($talent->rating ?? 5.0, 1) }}</span>
+                                        <span class="text-gray-900 font-bold ml-1">{{ number_format($avgRating > 0 ? $avgRating : 5.0, 1) }}</span>
                                     </div>
-                                    <p class="text-xs text-gray-500">{{ $talent->reviews_count ?? 0 }} Reviews</p>
+                                    <p class="text-xs text-gray-500">{{ $talent->reviewsReceived->count() }} Reviews</p>
                                 </div>
                                 <div class="w-px h-8 bg-gray-200"></div>
                                 <div class="text-center">
-                                    <span class="text-gray-900 font-bold">{{ $talent->jobs_completed ?? 0 }}</span>
+                                    <span class="text-gray-900 font-bold">{{ $talent->talentProjects()->where('status', \App\Enums\ProjectStatus::COMPLETED)->count() }}</span>
                                     <p class="text-xs text-gray-500">Jobs Done</p>
                                 </div>
                             </div>
 
-                            <a href="{{ url('/register') }}" class="block w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
-                                Hire {{ explode(' ', $talent->name ?? 'Talent')[0] }}
-                            </a>
+                            @auth
+                                @if(Auth::user()->isClient())
+                                    <a href="{{ route('jobs.create') }}" class="block w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                                        Tawarkan Proyek ke {{ explode(' ', $talent->name ?? 'Talenta')[0] }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('profile.show') }}" class="block w-full py-2 px-4 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+                                        Profil Talenta
+                                    </a>
+                                @endif
+                            @else
+                                <a href="{{ route('register') }}" class="block w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                                    Rekrut {{ explode(' ', $talent->name ?? 'Talenta')[0] }}
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -123,20 +136,32 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h2 class="text-xl font-bold text-gray-900 mb-6">Portfolio</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        @forelse($talent->portfolios ?? [] as $portfolio)
-                        <div class="group relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                            <!-- Placeholder image for portfolio -->
-                            <div class="aspect-video bg-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-gray-300 transition-colors">
-                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        @forelse($talent->portfolioItems as $portfolio)
+                        <div class="group relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex flex-col justify-between">
+                            <div>
+                                <div class="aspect-video bg-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-gray-300 transition-colors overflow-hidden">
+                                    @if($portfolio->thumbnail)
+                                        <img src="{{ asset('storage/' . $portfolio->thumbnail) }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
+                                    @else
+                                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    @endif
+                                </div>
+                                <div class="p-4 bg-white">
+                                    <h4 class="font-bold text-gray-900 mb-1 truncate hover:text-indigo-600">
+                                        <a href="{{ route('portfolio.show', $portfolio->slug) }}">{{ $portfolio->title }}</a>
+                                    </h4>
+                                    <p class="text-sm text-gray-500 line-clamp-2">{{ $portfolio->description }}</p>
+                                </div>
                             </div>
-                            <div class="p-4 bg-white">
-                                <h4 class="font-bold text-gray-900 mb-1 truncate">{{ $portfolio->title ?? 'Project Title' }}</h4>
-                                <p class="text-sm text-gray-500 line-clamp-2">{{ $portfolio->description ?? 'Project description goes here.' }}</p>
+                            <div class="px-4 pb-3 bg-white">
+                                <a href="{{ route('portfolio.show', $portfolio->slug) }}" class="text-xs font-semibold text-indigo-600 hover:underline">
+                                    Lihat Detail Portofolio &rarr;
+                                </a>
                             </div>
                         </div>
                         @empty
                         <div class="col-span-full py-8 text-center text-gray-500 italic bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                            No portfolio items to display.
+                            Belum ada portofolio yang dipublikasikan.
                         </div>
                         @endforelse
                     </div>
@@ -144,29 +169,30 @@
 
                 <!-- Reviews -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Client Reviews</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Ulasan Klien</h2>
                     <div class="space-y-6">
-                        @forelse($talent->reviews ?? [] as $review)
+                        @forelse($talent->reviewsReceived as $review)
                         <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
-                                    <h4 class="font-bold text-gray-900">{{ $review->client_name ?? 'Client' }}</h4>
-                                    <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($review->created_at ?? now())->diffForHumans() }}</p>
+                                    <h4 class="font-bold text-gray-900">{{ $review->reviewer?->name ?? 'Klien' }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
                                 </div>
                                 <div class="flex text-yellow-400">
                                     @for($i=1; $i<=5; $i++)
                                         <svg class="w-4 h-4 {{ $i <= ($review->rating ?? 5) ? 'fill-current' : 'text-gray-200' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                                     @endfor
+                                    <span class="text-xs text-gray-700 font-bold ml-1">{{ $review->rating }}.0</span>
                                 </div>
                             </div>
-                            <p class="text-gray-600 text-sm">"{{ $review->comment ?? 'Great work, highly recommended!' }}"</p>
-                            @if(isset($review->job_title))
-                            <p class="text-xs text-indigo-600 mt-2 font-medium">Project: {{ $review->job_title }}</p>
+                            <p class="text-gray-600 text-sm">"{{ $review->comment }}"</p>
+                            @if($review->project)
+                            <p class="text-xs text-indigo-600 mt-2 font-medium">Proyek: {{ $review->project->title }}</p>
                             @endif
                         </div>
                         @empty
                         <div class="py-8 text-center text-gray-500 italic bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                            No reviews yet.
+                            Belum ada ulasan dari klien.
                         </div>
                         @endforelse
                     </div>

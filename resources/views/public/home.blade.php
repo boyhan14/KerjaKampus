@@ -62,16 +62,16 @@
             @forelse($featuredJobs ?? [] as $job)
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow flex flex-col">
                 <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-lg font-bold text-gray-900 line-clamp-2"><a href="{{ url('/jobs/'.$job->id) }}" class="hover:text-indigo-600">{{ $job->title }}</a></h3>
+                    <h3 class="text-lg font-bold text-gray-900 line-clamp-2"><a href="{{ route('jobs.show', $job->slug ?? $job->id) }}" class="hover:text-indigo-600">{{ $job->title }}</a></h3>
                 </div>
-                <div class="text-sm text-gray-500 mb-4">{{ $job->client_name ?? 'Client' }}</div>
+                <div class="text-sm text-gray-500 mb-4">{{ $job->client?->company_name ?? ($job->client?->name ?? 'Klien Terverifikasi') }}</div>
                 
                 <div class="flex items-center gap-2 mb-4">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {{ $job->job_type ?? 'Project' }}
+                        {{ ucfirst(str_replace('_', ' ', $job->job_type->value ?? ($job->job_type ?? 'Project'))) }}
                     </span>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {{ $job->work_mode ?? 'Remote' }}
+                        {{ ucfirst($job->work_mode->value ?? ($job->work_mode ?? 'Remote')) }}
                     </span>
                 </div>
 
@@ -216,12 +216,13 @@
                 <div class="w-20 h-20 mx-auto bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 text-2xl font-bold mb-4">
                     {{ substr($talent->name ?? 'A', 0, 1) }}
                 </div>
-                <h3 class="text-lg font-bold text-gray-900"><a href="{{ url('/talents/'.($talent->username ?? $talent->id)) }}" class="hover:text-indigo-600">{{ $talent->name ?? 'Student Name' }}</a></h3>
+                <h3 class="text-lg font-bold text-gray-900"><a href="{{ route('talents.show', $talent->username ?? $talent->id) }}" class="hover:text-indigo-600">{{ $talent->name ?? 'Student Name' }}</a></h3>
                 <p class="text-sm text-gray-500 mb-3">{{ $talent->location ?? 'Indonesia' }}</p>
                 
                 <div class="flex items-center justify-center gap-1 text-yellow-400 mb-4">
+                    @php $avgRating = method_exists($talent, 'averageRating') ? $talent->averageRating() : 5; @endphp
                     @for($i=1; $i<=5; $i++)
-                        <svg class="w-4 h-4 {{ $i <= ($talent->rating ?? 5) ? 'fill-current' : 'text-gray-300' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg class="w-4 h-4 {{ $i <= ($avgRating > 0 ? $avgRating : 5) ? 'fill-current' : 'text-gray-300' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                     @endfor
                 </div>
 

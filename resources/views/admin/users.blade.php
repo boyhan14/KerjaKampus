@@ -60,8 +60,9 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2.5 py-0.5 text-xs font-bold rounded-md {{ $u->status->value === 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
-                                    {{ ucfirst($u->status->value) }}
+                                @php $uStatus = $u->status->value ?? $u->status; @endphp
+                                <span class="px-2.5 py-0.5 text-xs font-bold rounded-md {{ $uStatus === 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                    {{ ucfirst($uStatus) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-xs text-gray-500">
@@ -72,7 +73,7 @@
                                     <form action="{{ route('admin.users.status', $u->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('PUT')
-                                        @if($u->status->value === 'active')
+                                        @if($uStatus === 'active')
                                             <input type="hidden" name="status" value="suspended">
                                             <button type="submit" class="px-3 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-bold border border-red-200" onclick="return confirm('Suspend akun {{ $u->name }}?');">
                                                 Suspend

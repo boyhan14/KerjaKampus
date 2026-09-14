@@ -51,6 +51,22 @@ class ApplicationController extends Controller
         return view('applications.my', compact('applications'));
     }
 
+    public function clientApplications()
+    {
+        $user = Auth::user();
+        if ($user->isTalent() && !$user->isClient() && !$user->isAdmin()) {
+            return redirect()->route('applications.my');
+        }
+
+        $jobIds = $user->jobListings()->pluck('id');
+        $applications = Application::whereIn('job_listing_id', $jobIds)
+            ->with(['jobListing', 'talent.skills', 'project'])
+            ->latest()
+            ->paginate(15);
+
+        return view('applications.client', compact('applications'));
+    }
+
     public function jobApplications(JobListing $job)
     {
         if (Auth::id() !== $job->user_id && !Auth::user()->isAdmin()) {

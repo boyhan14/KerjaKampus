@@ -83,11 +83,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('applications.store');
     Route::post('/applications/{application}/withdraw', [ApplicationController::class, 'withdraw'])->name('applications.withdraw');
     Route::get('/my-applications', [ApplicationController::class, 'myApplications'])->name('applications.my');
+    Route::get('/applications', [ApplicationController::class, 'clientApplications'])->name('applications.client');
     Route::get('/jobs/{job}/applications', [ApplicationController::class, 'jobApplications'])->name('applications.job');
     Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('applications.update-status');
 
     // Projects
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::redirect('/my-projects', '/projects');
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::post('/projects/{project}/complete', [ProjectController::class, 'complete'])->name('projects.complete');
     Route::post('/projects/{project}/cancel', [ProjectController::class, 'cancel'])->name('projects.cancel');
@@ -101,6 +103,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
 
     // Reports
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');

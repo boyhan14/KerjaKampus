@@ -23,11 +23,12 @@
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
+                            @php $reportStatus = $report->status->value ?? $report->status; @endphp
                             <span class="px-2.5 py-0.5 text-xs font-bold rounded-md uppercase bg-red-50 text-red-700 border border-red-200">
                                 Target: {{ ucfirst($report->target_type) }} #{{ $report->target_id }}
                             </span>
-                            <span class="px-2.5 py-0.5 text-xs font-bold rounded-md {{ $report->status->value === 'pending' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600' }}">
-                                {{ ucfirst($report->status->value) }}
+                            <span class="px-2.5 py-0.5 text-xs font-bold rounded-md {{ $reportStatus === 'pending' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600' }}">
+                                {{ ucfirst($reportStatus) }}
                             </span>
                         </div>
                         <span class="text-xs text-gray-400">Dilaporkan {{ $report->created_at->diffForHumans() }}</span>
@@ -45,7 +46,7 @@
                         </div>
                     @endif
 
-                    @if($report->status->value === 'pending')
+                    @if($reportStatus === 'pending')
                         <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-3">
                             <form action="{{ route('admin.reports.dismiss', $report->id) }}" method="POST">
                                 @csrf

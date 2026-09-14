@@ -35,4 +35,22 @@ class NotificationController extends Controller
         $count = $this->notificationService->getUnreadCount(Auth::user());
         return response()->json(['count' => $count]);
     }
+
+    public function recent()
+    {
+        $user = Auth::user();
+        $unreadCount = $this->notificationService->getUnreadCount($user);
+        $notifications = $user->notifications()->latest()->take(5)->get();
+
+        return response()->json([
+            'unread_count' => $unreadCount,
+            'notifications' => $notifications->map(fn($n) => [
+                'id' => $n->id,
+                'title' => $n->title,
+                'message' => $n->message,
+                'is_read' => !is_null($n->read_at),
+                'time' => $n->created_at->diffForHumans(),
+            ]),
+        ]);
+    }
 }

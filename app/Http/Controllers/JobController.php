@@ -88,7 +88,10 @@ class JobController extends Controller
 
     public function show(string $slug)
     {
-        $job = JobListing::where('slug', $slug)->with(['category', 'skills', 'client'])->firstOrFail();
+        $job = JobListing::where('slug', $slug)
+            ->when(is_numeric($slug), fn($q) => $q->orWhere('id', $slug))
+            ->with(['category', 'skills', 'client'])
+            ->firstOrFail();
 
         $hasApplied = false;
         $userApplication = null;

@@ -294,5 +294,48 @@ class KerjaKampusFlowTest extends TestCase
         $this->get('/admin/reports')->assertStatus(200);
         $this->get('/admin/reviews')->assertStatus(200);
     }
+
+    public function test_recent_notifications_api()
+    {
+        $this->actingAs($this->talent);
+
+        $response = $this->getJson('/notifications/recent');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'unread_count',
+                'notifications',
+            ]);
+    }
+
+    public function test_client_applications_and_redirects()
+    {
+        $this->actingAs($this->client);
+
+        // /applications route for client
+        $this->get('/applications')->assertStatus(200);
+
+        // /my-projects redirect to /projects
+        $this->get('/my-projects')->assertRedirect('/projects');
+    }
+
+    public function test_job_show_by_id_and_slug()
+    {
+        $job = JobListing::create([
+            'user_id' => $this->client->id,
+            'title' => 'Vue Developer Needed',
+            'slug' => 'vue-developer-needed',
+            'description' => 'Vue developer needed for app',
+            'category_id' => $this->category->id,
+            'budget_min' => 2000000,
+            'budget_max' => 5000000,
+            'job_type' => 'freelance',
+            'work_mode' => 'remote',
+            'experience_level' => 'intermediate',
+            'status' => JobStatus::OPEN,
+        ]);
+
+        $this->get("/jobs/{$job->slug}")->assertStatus(200);
+        $this->get("/jobs/{$job->id}")->assertStatus(200);
+    }
 }
 

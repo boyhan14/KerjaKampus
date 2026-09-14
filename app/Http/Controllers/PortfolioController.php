@@ -68,7 +68,10 @@ class PortfolioController extends Controller
 
     public function show(string $slug)
     {
-        $portfolio = PortfolioItem::where('slug', $slug)->with(['user.skills', 'skills'])->firstOrFail();
+        $portfolio = PortfolioItem::where('slug', $slug)
+            ->when(is_numeric($slug), fn($q) => $q->orWhere('id', $slug))
+            ->with(['user.skills', 'skills'])
+            ->firstOrFail();
 
         if (!$portfolio->is_published && (!Auth::check() || Auth::id() !== $portfolio->user_id)) {
             abort(404);

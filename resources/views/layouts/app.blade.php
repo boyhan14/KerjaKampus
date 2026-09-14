@@ -85,16 +85,86 @@
                             </a>
                         </div>
                     @else
-                        <!-- Notification Bell -->
-                        <div class="ml-3 relative" x-data="{ unreadCount: 0 }" x-init="fetch('/notifications/unread-count').then(r => r.json()).then(data => unreadCount = data.count).catch(() => {})">
-                            <a href="{{ route('notifications.index') }}" title="Notifikasi" class="bg-white p-1.5 rounded-full text-gray-400 hover:text-indigo-600 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative block">
+                        <!-- Notification Bell with Dropdown -->
+                        <div class="ml-3 relative" x-data="{ 
+                            notifOpen: false, 
+                            unreadCount: 0, 
+                            notifications: [],
+                            loading: false,
+                            fetchNotifications() {
+                                this.loading = true;
+                                fetch('{{ route('notifications.recent') }}')
+                                    .then(r => r.json())
+                                    .then(data => {
+                                        this.unreadCount = data.unread_count;
+                                        this.notifications = data.notifications;
+                                        this.loading = false;
+                                    })
+                                    .catch(() => { this.loading = false; });
+                            }
+                        }" x-init="fetchNotifications()">
+                            <button @click="notifOpen = !notifOpen; if(notifOpen) fetchNotifications()" type="button" class="bg-white p-1.5 rounded-full text-gray-400 hover:text-indigo-600 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative block">
                                 <span class="sr-only">Lihat Notifikasi</span>
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                                 <!-- Badge -->
                                 <span x-show="unreadCount > 0" x-text="unreadCount" x-cloak class="absolute top-0 right-0 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center transform -translate-y-1 translate-x-1 shadow-xs"></span>
-                            </a>
+                            </button>
+
+                            <!-- Notification Dropdown Panel -->
+                            <div x-show="notifOpen" @click.away="notifOpen = false" x-transition.origin.top.right class="origin-top-right absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl shadow-xl py-2 bg-white ring-1 ring-black ring-opacity-5 z-50 focus:outline-none" style="display: none;">
+                                <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-bold text-gray-900">Notifikasi</span>
+                                        <span x-show="unreadCount > 0" x-text="unreadCount + ' baru'" class="text-[10px] font-semibold bg-red-50 text-red-600 px-2 py-0.5 rounded-full"></span>
+                                    </div>
+                                    <form action="{{ route('notifications.read-all') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
+                                            Tandai Semua Dibaca
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                    <template x-if="loading && notifications.length === 0">
+                                        <div class="py-6 text-center text-xs text-gray-400">Memuat notifikasi...</div>
+                                    </template>
+
+                                    <template x-if="!loading && notifications.length === 0">
+                                        <div class="py-8 text-center px-4">
+                                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                            <p class="text-xs text-gray-500 font-medium">Belum ada notifikasi</p>
+                                        </div>
+                                    </template>
+
+                                    <template x-for="item in notifications" :key="item.id">
+                                        <div class="p-3.5 hover:bg-gray-50 transition-colors flex items-start justify-between gap-3" :class="{ 'bg-indigo-50/40': !item.is_read }">
+                                            <div class="space-y-1 min-w-0 flex-1">
+                                                <div class="flex items-center gap-1.5">
+                                                    <span x-show="!item.is_read" class="w-2 h-2 rounded-full bg-indigo-600 shrink-0"></span>
+                                                    <h5 class="text-xs font-bold text-gray-900 truncate" :class="{ 'text-indigo-900': !item.is_read }" x-text="item.title"></h5>
+                                                </div>
+                                                <p class="text-xs text-gray-600 line-clamp-2" x-text="item.message"></p>
+                                                <span class="text-[10px] text-gray-400 block" x-text="item.time"></span>
+                                            </div>
+                                            <template x-if="!item.is_read">
+                                                <form :action="'/notifications/' + item.id + '/read'" method="POST" class="shrink-0">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <button type="submit" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-medium">Baca</button>
+                                                </form>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="p-2 border-t border-gray-100 text-center">
+                                    <a href="{{ route('notifications.index') }}" class="block py-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors">
+                                        Buka Semua Notifikasi &rarr;
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Profile Dropdown -->
@@ -111,17 +181,24 @@
                             <div x-show="userMenuOpen" x-transition.origin.top.right class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" style="display: none;">
                                 <div class="px-4 py-2 border-b border-gray-100">
                                     <p class="text-sm text-gray-900 truncate font-medium">{{ Auth::user()->name }}</p>
-                                    <p class="text-xs text-gray-500 truncate capitalize">{{ Auth::user()->role ?? 'User' }}</p>
+                                    <p class="text-xs text-gray-500 truncate capitalize">{{ Auth::user()->role?->value ?? (is_string(Auth::user()->role) ? Auth::user()->role : 'User') }}</p>
                                 </div>
                                 
                                 <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
                                 <a href="{{ url('/profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
                                 
-                                @if(Auth::user()->role === 'talent')
+                                @if(Auth::user()->isTalent())
                                     <a href="{{ url('/my-applications') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Applications</a>
-                                @elseif(Auth::user()->role === 'client')
+                                    <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Projects</a>
+                                @elseif(Auth::user()->isClient())
                                     <a href="{{ url('/my-jobs') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Jobs</a>
+                                    <a href="{{ route('applications.client') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Applicants</a>
+                                    <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Projects</a>
+                                @elseif(Auth::user()->isAdmin())
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Admin Panel</a>
                                 @endif
+
+                                <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Notifikasi</a>
 
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -188,6 +265,22 @@
                     <div class="mt-3 space-y-1">
                         <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Dashboard</a>
                         <a href="{{ url('/profile') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Profile</a>
+
+                        @if(Auth::user()->isTalent())
+                            <a href="{{ url('/my-applications') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Applications</a>
+                            <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Projects</a>
+                            <a href="{{ url('/my-portfolio') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Portfolio</a>
+                            <a href="{{ url('/skills') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Skills</a>
+                        @elseif(Auth::user()->isClient())
+                            <a href="{{ url('/my-jobs') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Jobs</a>
+                            <a href="{{ route('applications.client') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Applicants</a>
+                            <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Projects</a>
+                        @elseif(Auth::user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Admin Panel</a>
+                        @endif
+
+                        <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Notifikasi</a>
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block w-full text-left px-4 py-2 text-base font-medium text-red-600 hover:text-red-800 hover:bg-gray-100">Sign out</button>
@@ -214,13 +307,13 @@
                     </p>
                     <div class="flex space-x-6">
                         <!-- Social placeholders -->
-                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <a href="https://facebook.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-500">
                             <span class="sr-only">Facebook</span>
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
                             </svg>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <a href="https://twitter.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-500">
                             <span class="sr-only">Twitter</span>
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
@@ -234,16 +327,16 @@
                             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Platform</h3>
                             <ul role="list" class="mt-4 space-y-4">
                                 <li><a href="{{ url('/jobs') }}" class="text-base text-gray-500 hover:text-gray-900">Find Projects</a></li>
-                                <li><a href="{{ url('/talent') }}" class="text-base text-gray-500 hover:text-gray-900">Find Talent</a></li>
+                                <li><a href="{{ url('/talents') }}" class="text-base text-gray-500 hover:text-gray-900">Find Talent</a></li>
                                 <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">How It Works</a></li>
                             </ul>
                         </div>
                         <div class="mt-12 md:mt-0">
                             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Support</h3>
                             <ul role="list" class="mt-4 space-y-4">
-                                <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Help Center</a></li>
-                                <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Terms of Service</a></li>
-                                <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Privacy Policy</a></li>
+                                <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">Help Center</a></li>
+                                <li><a href="{{ url('/pricing') }}" class="text-base text-gray-500 hover:text-gray-900">Pricing & Terms</a></li>
+                                <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">Platform Policy</a></li>
                             </ul>
                         </div>
                     </div>

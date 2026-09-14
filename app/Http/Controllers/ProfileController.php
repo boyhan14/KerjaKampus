@@ -72,6 +72,7 @@ class ProfileController extends Controller
     public function publicProfile(string $username)
     {
         $talent = User::where('username', $username)
+            ->when(is_numeric($username), fn($q) => $q->orWhere('id', $username))
             ->with(['skills', 'portfolioItems' => function ($q) {
                 $q->where('is_published', true);
             }, 'reviewsReceived.reviewer'])

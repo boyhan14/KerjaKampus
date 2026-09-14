@@ -67,6 +67,14 @@
                                 <span class="text-xs font-bold text-green-700 block">Anda telah melamar</span>
                                 <span class="text-[11px] text-green-600">Status: {{ ucfirst($userApplication->status->value ?? 'Pending') }}</span>
                             </div>
+                        @elseif(($job->status->value ?? $job->status) !== 'open')
+                            <div class="p-3 bg-gray-100 rounded-xl border border-gray-200 text-center text-xs font-bold text-gray-500">
+                                Lowongan Ini Sudah Ditutup
+                            </div>
+                        @elseif(Auth::user()->isClient() && !Auth::user()->isAdmin())
+                            <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-center text-xs text-gray-500">
+                                Akun Klien tidak dapat melamar lowongan.
+                            </div>
                         @else
                             <button @click="applyModal = true" class="w-full px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md transition-all">
                                 Lamar Sekarang
