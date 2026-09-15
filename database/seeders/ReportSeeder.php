@@ -61,3 +61,4 @@ class ReportSeeder extends Seeder
         }
     }
 }
+
