@@ -56,36 +56,44 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
-    // Skills
-    Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
-    Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
-    Route::delete('/skills/{userSkill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    // ─── Talent Routes ───────────────────────────────────────────
+    Route::middleware('role:talent,admin')->group(function () {
+        // Skills
+        Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
+        Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
+        Route::delete('/skills/{userSkill}', [SkillController::class, 'destroy'])->name('skills.destroy');
 
-    // Portfolio
-    Route::get('/my-portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
-    Route::get('/portfolio/create', [PortfolioController::class, 'create'])->name('portfolio.create');
-    Route::post('/portfolio', [PortfolioController::class, 'store'])->name('portfolio.store');
-    Route::get('/portfolio/{portfolio}/edit', [PortfolioController::class, 'edit'])->name('portfolio.edit');
-    Route::put('/portfolio/{portfolio}', [PortfolioController::class, 'update'])->name('portfolio.update');
-    Route::delete('/portfolio/{portfolio}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
-    Route::post('/portfolio/{portfolio}/toggle-publish', [PortfolioController::class, 'togglePublish'])->name('portfolio.toggle-publish');
+        // Portfolio
+        Route::get('/my-portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
+        Route::get('/portfolio/create', [PortfolioController::class, 'create'])->name('portfolio.create');
+        Route::post('/portfolio', [PortfolioController::class, 'store'])->name('portfolio.store');
+        Route::get('/portfolio/{portfolio}/edit', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+        Route::put('/portfolio/{portfolio}', [PortfolioController::class, 'update'])->name('portfolio.update');
+        Route::delete('/portfolio/{portfolio}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
+        Route::post('/portfolio/{portfolio}/toggle-publish', [PortfolioController::class, 'togglePublish'])->name('portfolio.toggle-publish');
 
-    // Job Management (Client)
-    Route::get('/my-jobs', [JobController::class, 'myJobs'])->name('jobs.my');
-    Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
-    Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
-    Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
-    Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
-    Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
-    Route::post('/jobs/{job}/toggle-status', [JobController::class, 'toggleStatus'])->name('jobs.toggle-status');
+        // Applications (Talent side)
+        Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('applications.store');
+        Route::post('/applications/{application}/withdraw', [ApplicationController::class, 'withdraw'])->name('applications.withdraw');
+        Route::get('/my-applications', [ApplicationController::class, 'myApplications'])->name('applications.my');
+    });
 
-    // Applications
-    Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('applications.store');
-    Route::post('/applications/{application}/withdraw', [ApplicationController::class, 'withdraw'])->name('applications.withdraw');
-    Route::get('/my-applications', [ApplicationController::class, 'myApplications'])->name('applications.my');
-    Route::get('/applications', [ApplicationController::class, 'clientApplications'])->name('applications.client');
-    Route::get('/jobs/{job}/applications', [ApplicationController::class, 'jobApplications'])->name('applications.job');
-    Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('applications.update-status');
+    // ─── Client Routes ───────────────────────────────────────────
+    Route::middleware('role:client,admin')->group(function () {
+        // Job Management (Client)
+        Route::get('/my-jobs', [JobController::class, 'myJobs'])->name('jobs.my');
+        Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
+        Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
+        Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+        Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+        Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+        Route::post('/jobs/{job}/toggle-status', [JobController::class, 'toggleStatus'])->name('jobs.toggle-status');
+
+        // Applications Review (Client side)
+        Route::get('/applications', [ApplicationController::class, 'clientApplications'])->name('applications.client');
+        Route::get('/jobs/{job}/applications', [ApplicationController::class, 'jobApplications'])->name('applications.job');
+        Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('applications.update-status');
+    });
 
     // Projects
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

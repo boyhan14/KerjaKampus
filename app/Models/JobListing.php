@@ -66,6 +66,11 @@ class JobListing extends Model
         return $this->hasMany(Application::class);
     }
 
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
     public function scopeOpen($query)
     {
         return $query->where('status', JobStatus::OPEN);
@@ -73,8 +78,10 @@ class JobListing extends Model
 
     public function scopeSearch($query, $search)
     {
-        return $query->where('title', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%');
+        return $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', '%' . $search . '%')
+              ->orWhere('description', 'like', '%' . $search . '%');
+        });
     }
 
     public function isOpen(): bool

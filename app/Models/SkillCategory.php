@@ -21,4 +21,9 @@ class SkillCategory extends Model
     {
         return $this->hasMany(Skill::class);
     }
+
+    public function jobListings(): HasMany
+    {
+        return $this->hasMany(JobListing::class, 'category_id');
+    }
 }

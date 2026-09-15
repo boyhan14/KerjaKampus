@@ -15,7 +15,14 @@ class CheckRole
             return redirect()->route('login');
         }
 
-        $userRoles = $request->user()->roles ?? [$request->user()->role?->value ?? 'talent'];
+        $userRole = $request->user()->role instanceof UserRole 
+            ? $request->user()->role->value 
+            : (string) ($request->user()->role ?? 'talent');
+        
+        $userRoles = array_filter(array_unique(array_merge(
+            (array) ($request->user()->roles ?? []),
+            [$userRole]
+        )));
 
         foreach ($roles as $role) {
             if (in_array($role, $userRoles)) {
