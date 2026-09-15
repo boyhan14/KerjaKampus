@@ -6,54 +6,56 @@
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Semua Pelamar Masuk</h1>
-            <p class="text-sm text-gray-500">Tinjau seluruh pelamar dari semua lowongan pekerjaan yang Anda buat.</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kandidat Pelamar Masuk</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Evaluasi proposal pelamar dari seluruh lowongan pekerjaan yang Anda buat.</p>
         </div>
-        <a href="{{ route('jobs.my') }}" class="text-xs font-bold text-indigo-600 hover:underline">
+        <a href="{{ route('jobs.my') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
             &larr; Kelola per Lowongan
         </a>
     </div>
 
     @if($applications->isEmpty())
-        <div class="bg-white rounded-3xl border border-gray-200 p-12 text-center space-y-3">
-            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-gray-400">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-12 sm:p-16 text-center space-y-4 shadow-xs">
+            <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
             </div>
-            <h3 class="text-lg font-bold text-gray-900">Belum Ada Pelamar</h3>
-            <p class="text-sm text-gray-500 max-w-sm mx-auto">Anda belum menerima lamaran dari talenta untuk lowongan Anda saat ini.</p>
-            <a href="{{ route('jobs.create') }}" class="inline-block px-4 py-2 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow-xs hover:bg-indigo-700">
-                + Pasang Lowongan Baru
-            </a>
+            <h3 class="text-lg font-bold text-slate-900">Belum Ada Pelamar Masuk</h3>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">Saat talenta mahasiswa melamar ke lowongan Anda, proposal mereka akan ditampilkan di sini.</p>
+            <div class="pt-2">
+                <a href="{{ route('jobs.create') }}" class="inline-block px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-500/20">
+                    + Pasang Lowongan Baru
+                </a>
+            </div>
         </div>
     @else
         <div class="space-y-4">
             @foreach($applications as $app)
-                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs space-y-4 card-hover">
                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center shrink-0 text-lg uppercase">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 font-black flex items-center justify-center shrink-0 text-lg uppercase shadow-xs">
                                 {{ substr($app->talent?->name ?? 'T', 0, 1) }}
                             </div>
-                            <div>
-                                <h3 class="font-bold text-gray-900 text-base">
-                                    <a href="{{ route('talents.show', $app->talent?->username ?? $app->talent?->id ?? '') }}" target="_blank" class="hover:text-indigo-600">
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-slate-900 text-base">
+                                    <a href="{{ route('talents.show', $app->talent?->username ?? $app->talent?->id ?? '') }}" target="_blank" class="hover:text-indigo-600 transition-colors">
                                         {{ $app->talent?->name }}
                                     </a>
                                 </h3>
-                                <p class="text-xs text-gray-500">
+                                <p class="text-xs text-slate-500">
                                     Melamar untuk: 
-                                    <a href="{{ route('jobs.show', $app->jobListing?->slug ?? $app->jobListing?->id) }}" class="font-semibold text-indigo-600 hover:underline">
+                                    <a href="{{ route('jobs.show', $app->jobListing?->slug ?? $app->jobListing?->id) }}" class="font-bold text-indigo-600 hover:underline">
                                         {{ $app->jobListing?->title }}
                                     </a>
                                 </p>
                                 <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
                                     @if($app->proposed_price)
-                                        <span class="font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">Tawaran: Rp {{ number_format($app->proposed_price, 0, ',', '.') }}</span>
+                                        <span class="font-bold text-indigo-600 bg-indigo-50/60 border border-indigo-100/80 px-2.5 py-0.5 rounded-lg">Tawaran: Rp {{ number_format($app->proposed_price, 0, ',', '.') }}</span>
                                     @endif
                                     @if($app->estimated_duration)
-                                        <span class="text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">Waktu: {{ $app->estimated_duration }}</span>
+                                        <span class="text-slate-600 bg-slate-50 border border-slate-200/60 px-2.5 py-0.5 rounded-lg font-medium">Waktu: {{ $app->estimated_duration }}</span>
                                     @endif
-                                    <span class="text-gray-400">Diajukan {{ $app->created_at->diffForHumans() }}</span>
+                                    <span class="text-slate-400 text-[11px]">Diajukan {{ $app->created_at->diffForHumans() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -63,33 +65,34 @@
                             $statusBadge = match($app->status->value ?? $app->status) {
                                 'pending' => 'bg-amber-50 text-amber-700 border-amber-200',
                                 'shortlisted' => 'bg-blue-50 text-blue-700 border-blue-200',
-                                'accepted' => 'bg-green-50 text-green-700 border-green-200',
-                                'rejected' => 'bg-red-50 text-red-700 border-red-200',
-                                'withdrawn' => 'bg-gray-100 text-gray-600 border-gray-200',
-                                default => 'bg-gray-100 text-gray-700 border-gray-200',
+                                'accepted' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                'rejected' => 'bg-rose-50 text-rose-700 border-rose-200',
+                                'withdrawn' => 'bg-slate-100 text-slate-600 border-slate-200',
+                                default => 'bg-slate-100 text-slate-700 border-slate-200',
                             };
                         @endphp
-                        <span class="px-3 py-1 text-xs font-bold rounded-lg border {{ $statusBadge }} shrink-0">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border {{ $statusBadge }} shrink-0">
+                            <span class="w-1.5 h-1.5 rounded-full {{ ($app->status->value ?? $app->status) === 'accepted' ? 'bg-emerald-500' : 'bg-current' }}"></span>
                             {{ ucfirst($app->status->value ?? $app->status) }}
                         </span>
                     </div>
 
                     <!-- Cover letter excerpt -->
-                    <div class="p-4 bg-gray-50 rounded-xl text-xs text-gray-700 leading-relaxed">
-                        <span class="font-bold block text-gray-900 mb-1">Cover Letter:</span>
-                        {{ $app->cover_letter }}
+                    <div class="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Surat Pengantar & Penawaran:</span>
+                        <p class="whitespace-pre-line">{{ $app->cover_letter }}</p>
                     </div>
 
                     <!-- Action buttons -->
                     @if(in_array($app->status->value ?? $app->status, ['pending', 'shortlisted']))
-                        <div class="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-end gap-2">
+                        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-end gap-2">
                             @if(($app->status->value ?? $app->status) === 'pending')
                                 <form action="{{ route('applications.update-status', $app->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="status" value="shortlist">
-                                    <button type="submit" class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold border border-blue-200">
-                                        Shortlist
+                                    <button type="submit" class="px-3.5 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-xs font-bold border border-blue-200 transition-colors">
+                                        Shortlist Kandidat
                                     </button>
                                 </form>
                             @endif
@@ -98,7 +101,7 @@
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="status" value="reject">
-                                <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg border border-red-200" onclick="return confirm('Tolak lamaran ini?');">
+                                <button type="submit" class="px-3.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl border border-rose-200 transition-colors" onclick="return confirm('Tolak lamaran ini?');">
                                     Tolak
                                 </button>
                             </form>
@@ -107,15 +110,15 @@
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="status" value="accept">
-                                <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold shadow-xs" onclick="return confirm('Terima pelamar ini? Proyek baru akan otomatis dibuat.');">
+                                <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors btn-press" onclick="return confirm('Terima pelamar ini? Kontrak proyek baru akan otomatis dibuat.');">
                                     Terima & Buat Proyek
                                 </button>
                             </form>
                         </div>
                     @elseif(($app->status->value ?? $app->status) === 'accepted' && $app->project)
-                        <div class="pt-3 border-t border-gray-100 flex items-center justify-end">
-                            <a href="{{ route('projects.show', $app->project->id) }}" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs">
-                                Buka Proyek &rarr;
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
+                            <a href="{{ route('projects.show', $app->project->id) }}" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all">
+                                Buka Ruang Proyek &rarr;
                             </a>
                         </div>
                     @endif
@@ -129,4 +132,3 @@
     @endif
 </div>
 @endsection
-

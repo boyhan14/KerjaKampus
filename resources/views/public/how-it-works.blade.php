@@ -1,136 +1,148 @@
 @extends('layouts.app')
 
-@section('title', 'How It Works - KerjaKampus')
+@section('title', 'Cara Kerja - KerjaKampus')
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-indigo-700 text-white py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">How KerjaKampus Works</h1>
-        <p class="text-xl text-indigo-100 max-w-3xl mx-auto">
-            Whether you're looking to hire talented students or you're a student looking for opportunities, 
-            we make the process seamless and secure.
+<section class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-800 text-white py-16 sm:py-24 relative overflow-hidden">
+    <div class="absolute -top-20 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 border border-white/20 text-white text-xs font-bold mb-6">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Panduan Lengkap Platform
+        </div>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-tight">
+            Bagaimana KerjaKampus Bekerja?
+        </h1>
+        <p class="text-sm sm:text-lg text-indigo-100 max-w-2xl mx-auto leading-relaxed font-medium">
+            Mulai dari mencari talenta mahasiswa berbakat hingga menyelesaikan proyek dan menerima kompensasi dengan aman.
         </p>
     </div>
 </section>
 
 <!-- For Talent Section -->
-<section class="py-20 bg-white">
+<section class="py-20 lg:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <span class="text-indigo-600 font-semibold tracking-wide uppercase text-sm">For Students & Freelancers</span>
-            <h2 class="mt-2 text-3xl font-bold text-gray-900">Start Earning with Your Skills</h2>
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-indigo-600 font-bold uppercase tracking-wider text-xs">Untuk Mahasiswa & Talenta Muda</span>
+            <h2 class="mt-2 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Hasilkan Cuan dari Skill Kuliah</h2>
+            <p class="mt-2 text-sm text-slate-500">Mulai bangun portofolio profesional dan karier mandiri dalam 4 langkah.</p>
         </div>
 
-        <div class="relative">
-            <!-- Line connecting steps (desktop) -->
-            <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gray-200" aria-hidden="true"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Step 1 -->
+            <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-500/20">
+                    01
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Lengkapi Profil</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Daftar akun gratis, cantumkan latar belakang kampus, keahlian utama, dan unggah karya portofolio terbaikmu.
+                </p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-500/20">
+                    02
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Pilih Lowongan</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Eksplorasi ratusan lowongan proyek freelance, gig singkat, atau magang yang sesuai dengan waktu kuliahmu.
+                </p>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
-                <!-- Step 1 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-indigo-100 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-indigo-600">1</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Create a Profile</h3>
-                    <p class="text-gray-600">Sign up, list your skills, education, and build your portfolio. Let our AI help you optimize your presentation.</p>
+            <!-- Step 3 -->
+            <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-500/20">
+                    03
                 </div>
-                
-                <!-- Step 2 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-indigo-100 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-indigo-600">2</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Find Projects</h3>
-                    <p class="text-gray-600">Browse trending opportunities or let our AI match you with projects that perfectly fit your skill set.</p>
-                </div>
+                <h3 class="text-lg font-bold text-slate-900">Kirim Penawaran</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Ajukan proposal penawaran, tentukan estimasi waktu pengerjaan dan harga yang Anda tawarkan ke pihak klien.
+                </p>
+            </div>
 
-                <!-- Step 3 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-indigo-100 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-indigo-600">3</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Submit Proposals</h3>
-                    <p class="text-gray-600">Pitch your ideas to clients, discuss terms, and get hired. Our platform keeps all communication secure.</p>
+            <!-- Step 4 -->
+            <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-500/20">
+                    04
                 </div>
-
-                <!-- Step 4 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-indigo-100 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-indigo-600">4</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Work & Get Paid</h3>
-                    <p class="text-gray-600">Deliver great work, receive secure payments through our escrow system, and build your reputation.</p>
-                </div>
+                <h3 class="text-lg font-bold text-slate-900">Beres & Review</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Selesaikan tugas, dapatkan pembayaran transparan, dan kumpulkan rating ulasan bintang 5 untuk reputasi Anda.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- For Client Section -->
-<section class="py-20 bg-gray-50 border-t border-gray-200">
+<section class="py-20 lg:py-28 bg-slate-50 border-t border-slate-200/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <span class="text-indigo-600 font-semibold tracking-wide uppercase text-sm">For Clients & Businesses</span>
-            <h2 class="mt-2 text-3xl font-bold text-gray-900">Hire Top Student Talent</h2>
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-indigo-600 font-bold uppercase tracking-wider text-xs">Untuk UMKM, Startup & Klien</span>
+            <h2 class="mt-2 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Rekrut Mahasiswa Berprestasi</h2>
+            <p class="mt-2 text-sm text-slate-500">Selesaikan proyek Anda dengan talenta kampus yang siap kerja.</p>
         </div>
 
-        <div class="relative">
-            <!-- Line connecting steps (desktop) -->
-            <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gray-200" aria-hidden="true"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-lg shadow-md">
+                    01
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Pasang Lowongan</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Jelaskan lingkup proyek yang Anda butuhkan, tentukan budget realistis, dan tetapkan batas waktu pengumpulan.
+                </p>
+            </div>
+            
+            <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-lg shadow-md">
+                    02
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Review Pelamar</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Terima proposal dari mahasiswa berbakat. Bandingkan portofolio, rating, dan riwayat proyek mereka.
+                </p>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
-                <!-- Step 1 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-gray-200 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-gray-700">1</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Post a Project</h3>
-                    <p class="text-gray-600">Describe what you need done, set your budget, and choose project requirements. It's free to post.</p>
+            <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-lg shadow-md">
+                    03
                 </div>
-                
-                <!-- Step 2 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-gray-200 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-gray-700">2</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Review Proposals</h3>
-                    <p class="text-gray-600">Receive pitches from qualified students. Compare profiles, portfolios, and reviews to find the best fit.</p>
-                </div>
+                <h3 class="text-lg font-bold text-slate-900">Setujui Proyek</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Terima proposal yang paling cocok. Sistem akan otomatis membuat ruang proyek khusus untuk kolaborasi.
+                </p>
+            </div>
 
-                <!-- Step 3 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-gray-200 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-gray-700">3</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Hire & Collaborate</h3>
-                    <p class="text-gray-600">Award the project, deposit funds into escrow, and communicate directly through our workspace.</p>
+            <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs card-hover space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-lg shadow-md">
+                    04
                 </div>
-
-                <!-- Step 4 -->
-                <div class="relative text-center">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-gray-200 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-sm">
-                        <span class="text-2xl font-bold text-gray-700">4</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Approve & Pay</h3>
-                    <p class="text-gray-600">Review the final delivery. Once approved, funds are released to the talent. Leave a review to help them grow.</p>
-                </div>
+                <h3 class="text-lg font-bold text-slate-900">Selesai & Evaluasi</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Terima hasil pekerjaan, tandai selesai, dan berikan penilaian feedback untuk mendukung masa depan talenta.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- CTA Section -->
-<section class="py-24 bg-white text-center border-t border-gray-200">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Ready to get started?</h2>
-        <p class="text-lg text-gray-600 mb-10">Join thousands of students and clients already using KerjaKampus to connect and collaborate.</p>
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a href="{{ url('/register') }}" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow hover:bg-indigo-700 transition-colors">
-                Sign Up Now
+<section class="py-20 bg-white text-center border-t border-slate-200/80">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Siap Memulai Langkah Pertamamu?</h2>
+        <p class="text-sm sm:text-base text-slate-500 max-w-xl mx-auto">
+            Bergabunglah bersama ribuan mahasiswa dan pelaku usaha di seluruh Indonesia sekarang juga.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-2">
+            <a href="{{ url('/register') }}" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm rounded-2xl shadow-md shadow-indigo-500/20 transition-all btn-press">
+                Daftar Akun Sekarang
             </a>
-            <a href="{{ url('/jobs') }}" class="px-8 py-3 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors">
-                Browse Projects
+            <a href="{{ url('/jobs') }}" class="px-8 py-3.5 bg-white border border-slate-200 text-slate-700 font-bold text-sm rounded-2xl hover:bg-slate-50 transition-colors">
+                Eksplorasi Proyek
             </a>
         </div>
     </div>

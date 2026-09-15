@@ -1,92 +1,136 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50 antialiased">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'KerjaKampus')</title>
+    <title>@yield('title', 'KerjaKampus - Platform Karier & Marketplace Mahasiswa')</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Alpine.js (fallback if not in app.js) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Instrument Sans', sans-serif;
+        }
+    </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased text-gray-900 bg-gray-50">
+<body class="h-full flex flex-col font-sans antialiased text-slate-800 bg-slate-50 selection:bg-indigo-500 selection:text-white">
     
-    <!-- Flash Messages -->
+    <!-- Toast Flash Messages -->
     @if (session('success'))
-        <div x-data="{ show: true }" x-show="show" x-transition.duration.300ms class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 shadow-md border border-green-200" role="alert">
-            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-            </svg>
-            <div class="ms-3 text-sm font-medium">
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 5000)"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-4 sm:translate-y-0 sm:scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 text-sm font-medium text-emerald-900 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-emerald-200/80 max-w-md w-full mx-auto" role="alert">
+            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <div class="flex-1 text-xs sm:text-sm font-semibold">
                 {{ session('success') }}
             </div>
-            <button @click="show = false" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-            </button>
-        </div>
-    @endif
-    @if (session('error'))
-        <div x-data="{ show: true }" x-show="show" x-transition.duration.300ms class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 shadow-md border border-red-200" role="alert">
-            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
-            </svg>
-            <div class="ms-3 text-sm font-medium">
-                {{ session('error') }}
-            </div>
-            <button @click="show = false" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            <button @click="show = false" type="button" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" aria-label="Close">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
     @endif
 
-    <!-- Navbar -->
-    <nav x-data="{ mobileMenuOpen: false, userMenuOpen: false }" class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    @if (session('error'))
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 7000)"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 text-sm font-medium text-rose-900 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-rose-200/80 max-w-md w-full mx-auto" role="alert">
+            <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <div class="flex-1 text-xs sm:text-sm font-semibold">
+                {{ session('error') }}
+            </div>
+            <button @click="show = false" type="button" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" aria-label="Close">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    @endif
+
+    <!-- Modern Glass Navbar -->
+    <nav x-data="{ mobileMenuOpen: false, userMenuOpen: false }" class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-slate-200/80 transition-all duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo & Main Nav -->
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <a href="{{ url('/') }}" class="text-2xl font-bold text-indigo-600 tracking-tight">
-                            KerjaKampus
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- Brand Logo & Main Nav -->
+                <div class="flex items-center gap-8 lg:gap-10">
+                    <a href="{{ url('/') }}" class="flex items-center gap-2.5 group">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                            Kerja<span class="text-gradient">Kampus</span><span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-600 ml-0.5"></span>
+                        </span>
+                    </a>
+
+                    <!-- Desktop Nav Links -->
+                    <div class="hidden md:flex items-center gap-1">
+                        <a href="{{ url('/jobs') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 {{ request()->is('jobs*') ? 'text-indigo-600 bg-indigo-50/80 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70' }}">
+                            Cari Proyek
                         </a>
-                    </div>
-                    <div class="hidden sm:-my-px sm:ml-8 sm:flex sm:space-x-8">
-                        <a href="{{ url('/jobs') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Jobs
+                        <a href="{{ url('/talents') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 {{ request()->is('talents*') ? 'text-indigo-600 bg-indigo-50/80 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70' }}">
+                            Talenta
                         </a>
-                        <a href="{{ url('/talents') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Talent
+                        <a href="{{ url('/how-it-works') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 {{ request()->is('how-it-works*') ? 'text-indigo-600 bg-indigo-50/80 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70' }}">
+                            Cara Kerja
                         </a>
-                        <a href="{{ url('/how-it-works') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            How It Works
+                        <a href="{{ url('/pricing') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 {{ request()->is('pricing*') ? 'text-indigo-600 bg-indigo-50/80 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70' }}">
+                            Harga
                         </a>
                     </div>
                 </div>
 
                 <!-- Right Side (Auth / Guest) -->
-                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                <div class="hidden md:flex items-center gap-3">
                     @guest
-                        <div class="flex items-center space-x-4">
-                            <a href="{{ route('login') }}" class="text-gray-500 hover:text-gray-900 text-sm font-medium font-semibold">
-                                Login
-                            </a>
-                            <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                Get Started
-                            </a>
-                        </div>
+                        <a href="{{ route('login') }}" class="px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 rounded-xl transition-all duration-150">
+                            Masuk
+                        </a>
+                        <a href="{{ route('register') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-xl shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-150 btn-press">
+                            <span>Daftar Gratis</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
                     @else
-                        <!-- Notification Bell with Dropdown -->
-                        <div class="ml-3 relative" x-data="{ 
+                        <!-- Notification Bell with Interactive Dropdown -->
+                        <div class="relative" x-data="{ 
                             notifOpen: false, 
                             unreadCount: 0, 
                             notifications: [],
@@ -103,248 +147,321 @@
                                     .catch(() => { this.loading = false; });
                             }
                         }" x-init="fetchNotifications()">
-                            <button @click="notifOpen = !notifOpen; if(notifOpen) fetchNotifications()" type="button" class="bg-white p-1.5 rounded-full text-gray-400 hover:text-indigo-600 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative block">
-                                <span class="sr-only">Lihat Notifikasi</span>
-                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            <button @click="notifOpen = !notifOpen; if(notifOpen) fetchNotifications()" 
+                                    type="button" 
+                                    class="p-2.5 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100/80 transition-all duration-150 relative focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                                <span class="sr-only">Notifikasi</span>
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                                 </svg>
-                                <!-- Badge -->
-                                <span x-show="unreadCount > 0" x-text="unreadCount" x-cloak class="absolute top-0 right-0 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center transform -translate-y-1 translate-x-1 shadow-xs"></span>
+                                <!-- Ping badge -->
+                                <span x-show="unreadCount > 0" x-cloak class="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] px-1 items-center justify-center">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                    <span class="relative inline-flex items-center justify-center rounded-full h-4 min-w-[16px] px-1 bg-rose-600 text-white text-[9px] font-extrabold shadow-sm" x-text="unreadCount"></span>
+                                </span>
                             </button>
 
                             <!-- Notification Dropdown Panel -->
-                            <div x-show="notifOpen" @click.away="notifOpen = false" x-transition.origin.top.right class="origin-top-right absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl shadow-xl py-2 bg-white ring-1 ring-black ring-opacity-5 z-50 focus:outline-none" style="display: none;">
-                                <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                            <div x-show="notifOpen" 
+                                 @click.away="notifOpen = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                                 class="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-2xl bg-white border border-slate-200/80 z-50 overflow-hidden" 
+                                 style="display: none;">
+                                <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-sm font-bold text-gray-900">Notifikasi</span>
-                                        <span x-show="unreadCount > 0" x-text="unreadCount + ' baru'" class="text-[10px] font-semibold bg-red-50 text-red-600 px-2 py-0.5 rounded-full"></span>
+                                        <span class="text-sm font-bold text-slate-900">Notifikasi</span>
+                                        <span x-show="unreadCount > 0" x-text="unreadCount + ' baru'" class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-100"></span>
                                     </div>
                                     <form action="{{ route('notifications.read-all') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
-                                            Tandai Semua Dibaca
+                                        <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+                                            Tandai semua dibaca
                                         </button>
                                     </form>
                                 </div>
 
-                                <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
                                     <template x-if="loading && notifications.length === 0">
-                                        <div class="py-6 text-center text-xs text-gray-400">Memuat notifikasi...</div>
+                                        <div class="py-8 text-center text-xs text-slate-400">Memuat pemberitahuan...</div>
                                     </template>
 
                                     <template x-if="!loading && notifications.length === 0">
-                                        <div class="py-8 text-center px-4">
-                                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                            <p class="text-xs text-gray-500 font-medium">Belum ada notifikasi</p>
+                                        <div class="py-10 text-center px-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-2 text-slate-400">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                            </div>
+                                            <p class="text-xs text-slate-500 font-medium">Belum ada notifikasi baru</p>
                                         </div>
                                     </template>
 
                                     <template x-for="item in notifications" :key="item.id">
-                                        <div class="p-3.5 hover:bg-gray-50 transition-colors flex items-start justify-between gap-3" :class="{ 'bg-indigo-50/40': !item.is_read }">
+                                        <div class="p-4 hover:bg-slate-50 transition-colors flex items-start justify-between gap-3" :class="{ 'bg-indigo-50/30': !item.is_read }">
                                             <div class="space-y-1 min-w-0 flex-1">
                                                 <div class="flex items-center gap-1.5">
                                                     <span x-show="!item.is_read" class="w-2 h-2 rounded-full bg-indigo-600 shrink-0"></span>
-                                                    <h5 class="text-xs font-bold text-gray-900 truncate" :class="{ 'text-indigo-900': !item.is_read }" x-text="item.title"></h5>
+                                                    <h5 class="text-xs font-bold text-slate-900 truncate" :class="{ 'text-indigo-950': !item.is_read }" x-text="item.title"></h5>
                                                 </div>
-                                                <p class="text-xs text-gray-600 line-clamp-2" x-text="item.message"></p>
-                                                <span class="text-[10px] text-gray-400 block" x-text="item.time"></span>
+                                                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed" x-text="item.message"></p>
+                                                <span class="text-[10px] text-slate-400 font-medium block" x-text="item.time"></span>
                                             </div>
                                             <template x-if="!item.is_read">
                                                 <form :action="'/notifications/' + item.id + '/read'" method="POST" class="shrink-0">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <button type="submit" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-medium">Baca</button>
+                                                    <button type="submit" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-semibold px-2 py-1 rounded-md hover:bg-indigo-50 transition-colors">Baca</button>
                                                 </form>
                                             </template>
                                         </div>
                                     </template>
                                 </div>
 
-                                <div class="p-2 border-t border-gray-100 text-center">
-                                    <a href="{{ route('notifications.index') }}" class="block py-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors">
-                                        Buka Semua Notifikasi &rarr;
+                                <div class="p-2.5 border-t border-slate-100 bg-slate-50/50 text-center">
+                                    <a href="{{ route('notifications.index') }}" class="inline-block w-full py-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl transition-colors">
+                                        Lihat Semua Notifikasi &rarr;
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Profile Dropdown -->
-                        <div class="ml-4 relative">
-                            <div>
-                                <button @click="userMenuOpen = !userMenuOpen" @click.away="userMenuOpen = false" type="button" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open user menu</span>
-                                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
+                        <!-- User Profile Dropdown -->
+                        <div class="relative">
+                            <button @click="userMenuOpen = !userMenuOpen" 
+                                    @click.away="userMenuOpen = false" 
+                                    type="button" 
+                                    class="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                                @if(Auth::user()->avatar)
+                                    <img class="h-8 w-8 rounded-xl object-cover ring-1 ring-slate-200" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                @else
+                                    <div class="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-xs shadow-xs">
                                         {{ substr(Auth::user()->name, 0, 1) }}
                                     </div>
-                                </button>
-                            </div>
+                                @endif
+                                <div class="text-left hidden lg:block">
+                                    <p class="text-xs font-bold text-slate-900 leading-tight">{{ Str::limit(Auth::user()->name, 14) }}</p>
+                                    <p class="text-[10px] font-semibold text-indigo-600 capitalize">
+                                        {{ Auth::user()->role?->value ?? (is_string(Auth::user()->role) ? Auth::user()->role : 'User') }}
+                                    </p>
+                                </div>
+                                <svg class="w-4 h-4 text-slate-400 hidden lg:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
 
-                            <div x-show="userMenuOpen" x-transition.origin.top.right class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" style="display: none;">
-                                <div class="px-4 py-2 border-b border-gray-100">
-                                    <p class="text-sm text-gray-900 truncate font-medium">{{ Auth::user()->name }}</p>
-                                    <p class="text-xs text-gray-500 truncate capitalize">{{ Auth::user()->role?->value ?? (is_string(Auth::user()->role) ? Auth::user()->role : 'User') }}</p>
+                            <!-- User Dropdown Menu -->
+                            <div x-show="userMenuOpen" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                                 class="absolute right-0 mt-3 w-56 rounded-2xl shadow-2xl bg-white border border-slate-200/80 py-2 z-50" 
+                                 style="display: none;">
+                                <div class="px-4 py-3 border-b border-slate-100">
+                                    <p class="text-xs font-bold text-slate-900 truncate">{{ Auth::user()->name }}</p>
+                                    <p class="text-[11px] text-slate-500 truncate">{{ Auth::user()->email }}</p>
+                                    <div class="mt-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 capitalize">
+                                            {{ Auth::user()->role?->value ?? (is_string(Auth::user()->role) ? Auth::user()->role : 'User') }}
+                                        </span>
+                                    </div>
                                 </div>
                                 
-                                <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
-                                <a href="{{ url('/profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
-                                
-                                @if(Auth::user()->isTalent())
-                                    <a href="{{ url('/my-applications') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Applications</a>
-                                    <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Projects</a>
-                                @elseif(Auth::user()->isClient())
-                                    <a href="{{ url('/my-jobs') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Jobs</a>
-                                    <a href="{{ route('applications.client') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Applicants</a>
-                                    <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Projects</a>
-                                @elseif(Auth::user()->isAdmin())
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Admin Panel</a>
-                                @endif
+                                <div class="py-1">
+                                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        Dashboard
+                                    </a>
+                                    <a href="{{ url('/profile') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        Profil Saya
+                                    </a>
+                                    
+                                    @if(Auth::user()->isTalent())
+                                        <a href="{{ url('/my-applications') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            Lamaran Saya
+                                        </a>
+                                        <a href="{{ route('projects.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            Proyek Saya
+                                        </a>
+                                    @elseif(Auth::user()->isClient())
+                                        <a href="{{ url('/my-jobs') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            Lowongan Saya
+                                        </a>
+                                        <a href="{{ route('applications.client') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                            Kandidat Pelamar
+                                        </a>
+                                        <a href="{{ route('projects.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-50 transition-colors">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                            Proyek Aktif
+                                        </a>
+                                    @elseif(Auth::user()->isAdmin())
+                                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-indigo-700 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
+                                            <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                            Admin Console
+                                        </a>
+                                    @endif
+                                </div>
 
-                                <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Notifikasi</a>
-
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" role="menuitem">Logout</button>
-                                </form>
+                                <div class="pt-1 border-t border-slate-100">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="flex items-center gap-2.5 w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                            Keluar (Logout)
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     @endguest
                 </div>
 
-                <!-- Mobile menu button -->
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg x-show="!mobileMenuOpen" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center gap-2 md:hidden">
+                    @auth
+                        <a href="{{ route('notifications.index') }}" class="p-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100 relative">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </a>
+                    @endauth
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Buka Menu</span>
+                        <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
-                        <svg x-show="mobileMenuOpen" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" style="display: none;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg x-show="mobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
-        <div x-show="mobileMenuOpen" class="sm:hidden" id="mobile-menu" style="display: none;">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="{{ url('/jobs') }}" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Jobs</a>
-                <a href="{{ url('/talents') }}" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Talent</a>
-                <a href="{{ url('/how-it-works') }}" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">How It Works</a>
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="mobileMenuOpen" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-lg px-4 pt-2 pb-6 space-y-3" 
+             id="mobile-menu" 
+             style="display: none;">
+            <div class="space-y-1">
+                <a href="{{ url('/jobs') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('jobs*') ? 'text-indigo-600 bg-indigo-50 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">Cari Proyek</a>
+                <a href="{{ url('/talents') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('talents*') ? 'text-indigo-600 bg-indigo-50 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">Talenta Mahasiswa</a>
+                <a href="{{ url('/how-it-works') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('how-it-works*') ? 'text-indigo-600 bg-indigo-50 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">Cara Kerja</a>
+                <a href="{{ url('/pricing') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('pricing*') ? 'text-indigo-600 bg-indigo-50 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">Biaya & Harga</a>
             </div>
             
             @guest
-                <div class="pt-4 pb-3 border-t border-gray-200">
-                    <div class="flex items-center px-4 space-x-3">
-                        <a href="{{ route('login') }}" class="flex-1 text-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-base font-medium shadow-sm hover:bg-gray-50">
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}" class="flex-1 text-center bg-indigo-600 text-white px-4 py-2 rounded-lg text-base font-medium shadow-sm hover:bg-indigo-700">
-                            Get Started
-                        </a>
-                    </div>
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                    <a href="{{ route('login') }}" class="w-full text-center py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50">
+                        Masuk
+                    </a>
+                    <a href="{{ route('register') }}" class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-bold text-white shadow-md shadow-indigo-500/20">
+                        Daftar Gratis
+                    </a>
                 </div>
             @else
-                <div class="pt-4 pb-3 border-t border-gray-200">
-                    <div class="flex items-center px-4">
-                        <div class="flex-shrink-0">
-                            <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
-                                {{ substr(Auth::user()->name, 0, 1) }}
-                            </div>
+                <div class="pt-3 border-t border-slate-100 space-y-1">
+                    <div class="px-3 py-2 flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
+                            {{ substr(Auth::user()->name, 0, 1) }}
                         </div>
-                        <div class="ml-3">
-                            <div class="text-base font-medium text-gray-800">{{ Auth::user()->name }}</div>
-                            <div class="text-sm font-medium text-gray-500">{{ Auth::user()->email }}</div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-slate-500">{{ Auth::user()->email }}</p>
                         </div>
-                        <a href="{{ route('notifications.index') }}" class="ml-auto bg-white flex-shrink-0 p-1.5 rounded-full text-gray-400 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <span class="sr-only">Lihat Notifikasi</span>
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                        </a>
                     </div>
-                    <div class="mt-3 space-y-1">
-                        <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Dashboard</a>
-                        <a href="{{ url('/profile') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Profile</a>
-
-                        @if(Auth::user()->isTalent())
-                            <a href="{{ url('/my-applications') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Applications</a>
-                            <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Projects</a>
-                            <a href="{{ url('/my-portfolio') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Portfolio</a>
-                            <a href="{{ url('/skills') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Skills</a>
-                        @elseif(Auth::user()->isClient())
-                            <a href="{{ url('/my-jobs') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">My Jobs</a>
-                            <a href="{{ route('applications.client') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Applicants</a>
-                            <a href="{{ route('projects.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Projects</a>
-                        @elseif(Auth::user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Admin Panel</a>
-                        @endif
-
-                        <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">Notifikasi</a>
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="block w-full text-left px-4 py-2 text-base font-medium text-red-600 hover:text-red-800 hover:bg-gray-100">Sign out</button>
-                        </form>
-                    </div>
+                    <a href="{{ url('/dashboard') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">Dashboard</a>
+                    <a href="{{ url('/profile') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">Profil Saya</a>
+                    <form method="POST" action="{{ route('logout') }}" class="pt-2">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50">
+                            Keluar (Logout)
+                        </button>
+                    </form>
                 </div>
             @endguest
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Main Content Body -->
     <main class="flex-grow">
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
+    <!-- Modern Clean Footer -->
+    <footer class="bg-white border-t border-slate-200/80 mt-auto">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-                <div class="space-y-8 xl:col-span-1">
-                    <span class="text-2xl font-bold text-indigo-600 tracking-tight">KerjaKampus</span>
-                    <p class="text-gray-500 text-base">
-                        Connecting students with real-world projects and clients. Build your portfolio while studying.
+            <div class="xl:grid xl:grid-cols-4 xl:gap-12">
+                <div class="space-y-4 xl:col-span-1">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-xs">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-black text-slate-900 tracking-tight">
+                            Kerja<span class="text-gradient">Kampus</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        Platform marketplace karier dan gig terdepan yang menghubungkan mahasiswa berbakat Indonesia dengan UMKM, startup, dan klien profesional.
                     </p>
-                    <div class="flex space-x-6">
-                        <!-- Social placeholders -->
-                        <a href="https://facebook.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-500">
-                            <span class="sr-only">Facebook</span>
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                        <a href="https://twitter.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-500">
-                            <span class="sr-only">Twitter</span>
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                            </svg>
-                        </a>
+                    <div class="pt-2 flex items-center gap-3 text-slate-400">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sistem 100% Aktif
+                        </span>
                     </div>
                 </div>
-                <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
-                    <div class="md:grid md:grid-cols-2 md:gap-8">
-                        <div>
-                            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Platform</h3>
-                            <ul role="list" class="mt-4 space-y-4">
-                                <li><a href="{{ url('/jobs') }}" class="text-base text-gray-500 hover:text-gray-900">Find Projects</a></li>
-                                <li><a href="{{ url('/talents') }}" class="text-base text-gray-500 hover:text-gray-900">Find Talent</a></li>
-                                <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">How It Works</a></li>
-                            </ul>
-                        </div>
-                        <div class="mt-12 md:mt-0">
-                            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Support</h3>
-                            <ul role="list" class="mt-4 space-y-4">
-                                <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">Help Center</a></li>
-                                <li><a href="{{ url('/pricing') }}" class="text-base text-gray-500 hover:text-gray-900">Pricing & Terms</a></li>
-                                <li><a href="{{ url('/how-it-works') }}" class="text-base text-gray-500 hover:text-gray-900">Platform Policy</a></li>
-                            </ul>
-                        </div>
+
+                <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-8 xl:mt-0 xl:col-span-3">
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Eksplorasi</h4>
+                        <ul role="list" class="mt-4 space-y-2.5 text-xs sm:text-sm">
+                            <li><a href="{{ url('/jobs') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Lowongan & Proyek</a></li>
+                            <li><a href="{{ url('/talents') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Direktori Talenta</a></li>
+                            <li><a href="{{ url('/how-it-works') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Cara Mendaftar</a></li>
+                            <li><a href="{{ url('/pricing') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Skema Biaya</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Kategori Populer</h4>
+                        <ul role="list" class="mt-4 space-y-2.5 text-xs sm:text-sm">
+                            <li><a href="{{ url('/jobs?search=Web') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Web Development</a></li>
+                            <li><a href="{{ url('/jobs?search=UI%2FUX') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">UI/UX Design</a></li>
+                            <li><a href="{{ url('/jobs?search=Content') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Content Writing</a></li>
+                            <li><a href="{{ url('/jobs?search=Data') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Data Science</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Bantuan & Legal</h4>
+                        <ul role="list" class="mt-4 space-y-2.5 text-xs sm:text-sm">
+                            <li><a href="{{ url('/how-it-works') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Pusat Bantuan (FAQ)</a></li>
+                            <li><a href="{{ url('/how-it-works') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Syarat & Ketentuan</a></li>
+                            <li><a href="{{ url('/how-it-works') }}" class="text-slate-500 hover:text-indigo-600 transition-colors">Kebijakan Privasi</a></li>
+                            <li><a href="mailto:support@kerjakampus.com" class="text-slate-500 hover:text-indigo-600 transition-colors">Hubungi Kami</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-200 pt-8">
-                <p class="text-base text-gray-400 xl:text-center">
-                    &copy; {{ date('Y') }} KerjaKampus. All rights reserved.
+
+            <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+                <p>&copy; {{ date('Y') }} KerjaKampus Platform. Hak Cipta Dilindungi.</p>
+                <p class="flex items-center gap-1">
+                    Dibuat dengan sepenuh hati untuk mahasiswa & masa depan karier Indonesia 🇮🇩
                 </p>
             </div>
         </div>

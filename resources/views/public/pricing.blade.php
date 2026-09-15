@@ -1,82 +1,201 @@
 @extends('layouts.app')
 
-@section('title', 'Pricing - KerjaKampus')
+@section('title', 'Biaya & Skema Harga - KerjaKampus')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">Simple, transparent pricing</h1>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16">
-            We believe in giving everyone a fair chance to succeed.
-        </p>
+<div class="relative bg-slate-50 min-h-screen py-20 overflow-hidden">
+    <!-- Ambient Background Lighting -->
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div class="absolute top-1/2 -right-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
-        <!-- Current Beta Pricing -->
-        <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-indigo-100 mb-20 relative transform scale-105">
-            <div class="absolute top-0 right-0 -mr-2 -mt-2 w-24 h-24 overflow-hidden">
-                <div class="absolute bg-indigo-500 text-white text-xs font-bold py-1 px-8 shadow-lg transform rotate-45 top-6 -right-6">BETA</div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold tracking-wide uppercase mb-4">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Transparan & Terjangkau
             </div>
-            
-            <div class="px-6 py-10 sm:px-10">
-                <h3 class="text-2xl font-bold text-gray-900 text-center mb-2">Early Access</h3>
-                <div class="mt-4 flex justify-center text-5xl font-extrabold text-indigo-600">
-                    Rp 0
+            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+                Investasi Terbaik untuk <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700">Masa Depan Karir & Bisnismu</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+                Platform KerjaKampus dirancang inklusif untuk mahasiswa dan UMKM/Startup. Tanpa biaya pendaftaran tersembunyi selama masa Early Access Beta.
+            </p>
+        </div>
+
+        <!-- Pricing Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-20">
+            <!-- Card 1: Talent / Mahasiswa -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold mb-4">
+                        Untuk Mahasiswa & Fresh Grad
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900">Talenta Kampus</h3>
+                    <p class="text-xs text-slate-500 mt-1 mb-6">Mulai bangun rekam jejak portofolio dan hasilkan uang saku tambahan.</p>
+
+                    <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-100">
+                        <span class="text-4xl font-black text-slate-900">Rp 0</span>
+                        <span class="text-xs text-slate-400 font-medium">/ selamanya gratis daftar</span>
+                    </div>
+
+                    <ul class="space-y-3.5 text-xs text-slate-700 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Profil profesional & portofolio publik gratis</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Kirim lamaran tanpa batas ke semua proyek</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Akses fitur AI Job Matching otomatis</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Ulasan & bintang reputasi terverifikasi</span>
+                        </li>
+                    </ul>
                 </div>
-                <p class="text-center text-gray-500 mt-2 font-medium">Free for all users during beta</p>
-                
-                <ul class="mt-10 space-y-4">
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3 text-gray-700">Unlimited profile creations</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3 text-gray-700">Apply to unlimited projects</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3 text-gray-700">Post unlimited projects</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3 text-gray-700">0% platform fee on transactions</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span class="ml-3 text-gray-700">Early access to AI Career tools</span>
-                    </li>
-                </ul>
-                
-                <div class="mt-10">
-                    <a href="{{ url('/register') }}" class="block w-full text-center px-6 py-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors shadow">
-                        Join for Free
-                    </a>
+
+                <a href="{{ route('register') }}" class="w-full py-3.5 px-4 text-center rounded-2xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-all shadow-sm">
+                    Daftar Sebagai Talenta
+                </a>
+            </div>
+
+            <!-- Card 2: Client Early Access (Featured / Popular) -->
+            <div class="relative bg-white rounded-3xl p-8 border-2 border-indigo-600 shadow-2xl shadow-indigo-600/10 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between transform md:-translate-y-2">
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-black uppercase tracking-wider py-1 px-4 rounded-full shadow-md">
+                    Paling Populer &bull; Beta Promo
                 </div>
+
+                <div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold mb-4">
+                        Klien, UMKM & Startup
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900">Bisnis & Klien</h3>
+                    <p class="text-xs text-slate-500 mt-1 mb-6">Rekrut talenta terampil dengan efisiensi biaya maksimal.</p>
+
+                    <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-100">
+                        <span class="text-4xl font-black text-indigo-600">Rp 0</span>
+                        <span class="text-xs text-slate-400 font-medium">/ 0% Komisi Beta</span>
+                    </div>
+
+                    <ul class="space-y-3.5 text-xs text-slate-700 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Pasang lowongan proyek tanpa kuota limit</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Manajemen pelamar, shortlist & penerimaan</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Kolaborasi proyek & pelaporan milestone</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Tanpa potongan fee platform (0% platform fee)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="{{ route('register') }}" class="w-full py-3.5 px-4 text-center rounded-2xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/30">
+                    Pasang Lowongan Pertama
+                </a>
+            </div>
+
+            <!-- Card 3: Enterprise / Kampus Partner -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-bold mb-4">
+                        Institusi & Kampus
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900">Campus Partnership</h3>
+                    <p class="text-xs text-slate-500 mt-1 mb-6">Untuk universitas, CDC, atau inkubator bisnis kampus.</p>
+
+                    <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-100">
+                        <span class="text-3xl font-black text-slate-900">Custom</span>
+                        <span class="text-xs text-slate-400 font-medium">/ MoA Kampus</span>
+                    </div>
+
+                    <ul class="space-y-3.5 text-xs text-slate-700 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Dedicated dashboard Career Development Center</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Laporan serapan talenta & tracer study</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Integrasi program magang ber-SKS</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span>Dedicated Account Manager & Support</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="mailto:partnership@kerjakampus.id" class="w-full py-3.5 px-4 text-center rounded-2xl bg-slate-100 text-slate-800 font-bold text-xs hover:bg-slate-200 transition-all">
+                    Hubungi Tim Kemitraan
+                </a>
             </div>
         </div>
 
-        <!-- Future Plans Teaser -->
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8">What happens after beta?</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-                <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-sm opacity-80">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">For Talents</h3>
-                    <p class="text-gray-600 mb-4">Joining and applying to projects will always be free. We'll only charge a small platform fee (5-10%) when you successfully complete a project and get paid.</p>
+        <!-- FAQ Section -->
+        <div class="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200/80 p-8 sm:p-10 shadow-sm">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight text-center mb-8">Pertanyaan yang Sering Diajukan</h2>
+
+            <div class="space-y-6 divide-y divide-slate-100">
+                <div class="pt-4 first:pt-0">
+                    <h3 class="text-sm font-bold text-slate-900 mb-1.5">Apakah pendaftaran mahasiswa benar-benar gratis?</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Ya, 100% gratis. Mahasiswa dapat membuat profil, memajang portofolio, dan melamar pekerjaan tanpa dipungut biaya langganan apa pun.
+                    </p>
                 </div>
-                
-                <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-sm opacity-80">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">For Clients</h3>
-                    <p class="text-gray-600 mb-4">Posting projects will remain free. A standard processing fee (3%) will apply on payments to cover payment gateway costs and platform maintenance.</p>
+
+                <div class="pt-6">
+                    <h3 class="text-sm font-bold text-slate-900 mb-1.5">Bagaimana skema pembayaran proyek antara klien dan talenta?</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Klien dan talenta menyepakati nilai kompensasi di platform. Selama periode early access, KerjaKampus tidak memungut biaya potongan komisi sehingga pembayaran diterima penuh oleh talenta.
+                    </p>
+                </div>
+
+                <div class="pt-6">
+                    <h3 class="text-sm font-bold text-slate-900 mb-1.5">Apakah saya bisa berganti peran menjadi Klien dan Talenta sekaligus?</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Tentu saja. Anda dapat memilih peran saat mendaftar dan dapat menggunakan fitur posting proyek maupun melamar pekerjaan sesuai kebutuhan.
+                    </p>
                 </div>
             </div>
         </div>
