@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\JobStatus;
-use App\Enums\JobType;
-use App\Enums\WorkMode;
-use App\Enums\ExperienceLevel;
-use App\Enums\UserRole;
 use App\Models\JobListing;
-use App\Models\SkillCategory;
 use App\Models\Skill;
+use App\Models\SkillCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class JobController extends Controller
@@ -24,7 +21,7 @@ class JobController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -80,8 +77,12 @@ class JobController extends Controller
         }
 
         $jobs = $query->paginate(12)->withQueryString();
-        $categories = SkillCategory::all();
-        $skills = Skill::all();
+        $categories = Cache::remember('job_categories_all', 3600, function () {
+            return SkillCategory::orderBy('name')->get();
+        });
+        $skills = Cache::remember('job_skills_all', 3600, function () {
+            return Skill::orderBy('name')->get();
+        });
 
         return view('jobs.index', compact('jobs', 'categories', 'skills'));
     }
@@ -89,7 +90,7 @@ class JobController extends Controller
     public function show(string $slug)
     {
         $job = JobListing::where('slug', $slug)
-            ->when(is_numeric($slug), fn($q) => $q->orWhere('id', $slug))
+            ->when(is_numeric($slug), fn ($q) => $q->orWhere('id', $slug))
             ->with(['category', 'skills', 'client'])
             ->firstOrFail();
 
@@ -97,7 +98,7 @@ class JobController extends Controller
         $userApplication = null;
         if (Auth::check()) {
             $userApplication = $job->applications()->where('user_id', Auth::id())->first();
-            $hasApplied = !is_null($userApplication);
+            $hasApplied = ! is_null($userApplication);
         }
 
         return view('jobs.show', compact('job', 'hasApplied', 'userApplication'));
@@ -106,7 +107,7 @@ class JobController extends Controller
     public function create()
     {
         $user = Auth::user();
-        if (!$user->isClient() && !$user->isAdmin()) {
+        if (! $user->isClient() && ! $user->isAdmin()) {
             abort(403, 'Hanya klien yang dapat membuat lowongan pekerjaan.');
         }
 
@@ -119,7 +120,7 @@ class JobController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if (!$user->isClient() && !$user->isAdmin()) {
+        if (! $user->isClient() && ! $user->isAdmin()) {
             abort(403, 'Hanya klien yang dapat membuat lowongan pekerjaan.');
         }
 
@@ -140,7 +141,7 @@ class JobController extends Controller
 
         $slug = Str::slug($validated['title']);
         if (JobListing::where('slug', $slug)->exists()) {
-            $slug .= '-' . Str::random(5);
+            $slug .= '-'.Str::random(5);
         }
 
         $job = JobListing::create([
@@ -159,7 +160,7 @@ class JobController extends Controller
             'status' => JobStatus::OPEN,
         ]);
 
-        if (!empty($validated['skills'])) {
+        if (! empty($validated['skills'])) {
             $job->skills()->attach($validated['skills']);
         }
 
@@ -251,12 +252,13 @@ class JobController extends Controller
     public function myJobs()
     {
         $jobs = Auth::user()->jobListings()->withCount('applications')->latest()->paginate(12);
+
         return view('jobs.my', compact('jobs'));
     }
 
     private function authorizeOwnership(JobListing $job)
     {
-        if (Auth::id() !== $job->user_id && !Auth::user()->isAdmin()) {
+        if (Auth::id() !== $job->user_id && ! Auth::user()->isAdmin()) {
             abort(403, 'Akses tidak diizinkan.');
         }
     }

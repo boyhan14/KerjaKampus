@@ -9,15 +9,21 @@ use Illuminate\Support\Collection;
 
 class JobMatchingService
 {
-    public function getMatchScore(User $talent, JobListing $job): int
+    /**
+     * Calculate match score between talent and job listing.
+     * Accepts optional precomputed talent data to avoid redundant computations in loops.
+     *
+     * @param  array{skill_ids?: array, category_ids?: array, completion?: int}|null  $precomputed
+     */
+    public function getMatchScore(User $talent, JobListing $job, ?array $precomputed = null): int
     {
         $score = 0;
 
-        $talentSkillIds = $talent->skills->pluck('id')->toArray();
+        $talentSkillIds = $precomputed['skill_ids'] ?? $talent->skills->pluck('id')->toArray();
         $jobSkillIds = $job->skills->pluck('id')->toArray();
 
         // 1. Skill match: up to 50%
-        if (!empty($jobSkillIds)) {
+        if (! empty($jobSkillIds)) {
             $matchedSkills = array_intersect($talentSkillIds, $jobSkillIds);
             $matchRatio = count($matchedSkills) / count($jobSkillIds);
             $score += $matchRatio * 50;
@@ -28,7 +34,7 @@ class JobMatchingService
         // 2. Category match: up to 20%
         // Check if any talent skill belongs to the job's category
         if ($job->category_id) {
-            $talentCategoryIds = $talent->skills->pluck('skill_category_id')->unique()->toArray();
+            $talentCategoryIds = $precomputed['category_ids'] ?? $talent->skills->pluck('skill_category_id')->unique()->toArray();
             if (in_array($job->category_id, $talentCategoryIds)) {
                 $score += 20;
             }
@@ -59,7 +65,7 @@ class JobMatchingService
         }
 
         // 5. Profile completeness: up to 5%
-        $completion = $talent->profileCompletionPercentage();
+        $completion = $precomputed['completion'] ?? $talent->profileCompletionPercentage();
         $score += (int) round(($completion / 100) * 5);
 
         return (int) min(100, max(15, round($score)));
@@ -67,8 +73,14 @@ class JobMatchingService
 
     public function getRecommendedJobs(User $talent, int $limit = 6): Collection
     {
-        // Eager load skills for talent to avoid N+1
-        $talent->loadMissing('skills');
+        // Eager load relations for talent to avoid redundant queries
+        $talent->loadMissing(['skills', 'portfolioItems']);
+
+        $precomputed = [
+            'skill_ids' => $talent->skills->pluck('id')->toArray(),
+            'category_ids' => $talent->skills->pluck('skill_category_id')->unique()->toArray(),
+            'completion' => $talent->profileCompletionPercentage(),
+        ];
 
         $openJobs = JobListing::where('status', JobStatus::OPEN)
             ->with(['skills', 'category', 'client'])
@@ -76,8 +88,9 @@ class JobMatchingService
             ->take(30)
             ->get();
 
-        $scoredJobs = $openJobs->map(function ($job) use ($talent) {
-            $job->match_score = $this->getMatchScore($talent, $job);
+        $scoredJobs = $openJobs->map(function ($job) use ($talent, $precomputed) {
+            $job->match_score = $this->getMatchScore($talent, $job, $precomputed);
+
             return $job;
         });
 

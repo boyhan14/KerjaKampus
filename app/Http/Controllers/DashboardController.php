@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
-use App\Enums\ApplicationStatus;
 use App\Enums\ProjectStatus;
 use App\Models\Application;
 use App\Models\JobListing;
 use App\Models\Project;
-use App\Models\User;
 use App\Services\JobMatchingService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -48,6 +44,7 @@ class DashboardController extends Controller
             ->where('status', ProjectStatus::COMPLETED)
             ->count();
 
+        $user->loadMissing(['skills', 'portfolioItems']);
         $recommendedJobs = $jobMatchingService->getRecommendedJobs($user, 6);
 
         $profileCompletion = $user->profileCompletionPercentage();
@@ -79,9 +76,10 @@ class DashboardController extends Controller
             ->where('status', ProjectStatus::COMPLETED)
             ->count();
 
-        $jobIds = JobListing::where('user_id', $user->id)->pluck('id');
-        $recentApplications = Application::whereIn('job_listing_id', $jobIds)
-            ->with('talent', 'jobListing')
+        $recentApplications = Application::whereHas('jobListing', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+            ->with(['talent', 'jobListing'])
             ->latest()
             ->take(5)
             ->get();

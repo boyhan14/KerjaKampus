@@ -7,10 +7,10 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -99,6 +99,7 @@ class User extends Authenticatable
         }
 
         $roles = $this->roles ?? [];
+
         return in_array($role->value, $roles);
     }
 
@@ -120,7 +121,7 @@ class User extends Authenticatable
     public function addRole(UserRole $role): void
     {
         $roles = $this->roles ?? [];
-        if (!in_array($role->value, $roles)) {
+        if (! in_array($role->value, $roles)) {
             $roles[] = $role->value;
             $this->roles = $roles;
             $this->save();
@@ -130,22 +131,54 @@ class User extends Authenticatable
     public function profileCompletionPercentage(): int
     {
         $percentage = 0;
-        if ($this->avatar) $percentage += 10;
-        if ($this->bio) $percentage += 10;
-        if ($this->location) $percentage += 10;
-        if ($this->education) $percentage += 10;
-        if ($this->skills()->exists()) $percentage += 20;
-        if ($this->portfolioItems()->exists()) $percentage += 20;
-        if ($this->experience_years !== null) $percentage += 10;
+        if ($this->avatar) {
+            $percentage += 10;
+        }
+        if ($this->bio) {
+            $percentage += 10;
+        }
+        if ($this->location) {
+            $percentage += 10;
+        }
+        if ($this->education) {
+            $percentage += 10;
+        }
+
+        $hasSkills = $this->relationLoaded('skills')
+            ? $this->skills->isNotEmpty()
+            : $this->skills()->exists();
+        if ($hasSkills) {
+            $percentage += 20;
+        }
+
+        $hasPortfolio = $this->relationLoaded('portfolioItems')
+            ? $this->portfolioItems->isNotEmpty()
+            : $this->portfolioItems()->exists();
+        if ($hasPortfolio) {
+            $percentage += 20;
+        }
+
+        if ($this->experience_years !== null) {
+            $percentage += 10;
+        }
         if ($this->github_url || $this->linkedin_url || $this->twitter_url || $this->instagram_url || $this->website) {
             $percentage += 10;
         }
+
         return $percentage;
     }
 
     public function averageRating(): float
     {
-        return (float) $this->reviewsReceived()->avg('rating') ?: 0.0;
+        if (isset($this->attributes['reviews_received_avg_rating'])) {
+            return round((float) $this->attributes['reviews_received_avg_rating'], 1);
+        }
+
+        if ($this->relationLoaded('reviewsReceived')) {
+            return round((float) ($this->reviewsReceived->avg('rating') ?: 0.0), 1);
+        }
+
+        return round((float) ($this->reviewsReceived()->avg('rating') ?: 0.0), 1);
     }
 
     // Relationships

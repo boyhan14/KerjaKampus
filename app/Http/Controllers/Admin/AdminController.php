@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Enums\UserStatus;
 use App\Enums\JobStatus;
 use App\Enums\ReportStatus;
+use App\Enums\UserStatus;
+use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\JobListing;
 use App\Models\Project;
@@ -15,6 +15,7 @@ use App\Models\Skill;
 use App\Models\SkillCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -46,8 +47,8 @@ class AdminController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%")
-                  ->orWhere('username', 'like', "%{$request->search}%");
+                    ->orWhere('email', 'like', "%{$request->search}%")
+                    ->orWhere('username', 'like', "%{$request->search}%");
             });
         }
 
@@ -60,6 +61,7 @@ class AdminController extends Controller
         }
 
         $users = $query->latest()->paginate(15)->withQueryString();
+
         return view('admin.users', compact('users'));
     }
 
@@ -85,6 +87,7 @@ class AdminController extends Controller
         }
 
         $jobs = $query->latest()->paginate(15)->withQueryString();
+
         return view('admin.jobs', compact('jobs'));
     }
 
@@ -101,6 +104,7 @@ class AdminController extends Controller
     {
         $skills = Skill::with('category')->latest()->paginate(20);
         $categories = SkillCategory::all();
+
         return view('admin.skills', compact('skills', 'categories'));
     }
 
@@ -113,7 +117,7 @@ class AdminController extends Controller
 
         $slug = Str::slug($validated['name']);
         if (Skill::where('slug', $slug)->exists()) {
-            $slug .= '-' . Str::random(4);
+            $slug .= '-'.Str::random(4);
         }
 
         Skill::create([
@@ -121,6 +125,10 @@ class AdminController extends Controller
             'slug' => $slug,
             'skill_category_id' => $validated['skill_category_id'],
         ]);
+
+        Cache::forget('job_skills_all');
+        Cache::forget('public_talents_skills_list');
+        Cache::forget('home_platform_stats');
 
         return redirect()->back()->with('success', 'Keahlian baru berhasil ditambahkan.');
     }
@@ -133,18 +141,28 @@ class AdminController extends Controller
         ]);
 
         $skill->update($validated);
+
+        Cache::forget('job_skills_all');
+        Cache::forget('public_talents_skills_list');
+
         return redirect()->back()->with('success', 'Keahlian berhasil diperbarui.');
     }
 
     public function destroySkill(Skill $skill)
     {
         $skill->delete();
+
+        Cache::forget('job_skills_all');
+        Cache::forget('public_talents_skills_list');
+        Cache::forget('home_platform_stats');
+
         return redirect()->back()->with('success', 'Keahlian berhasil dihapus.');
     }
 
     public function categories()
     {
         $categories = SkillCategory::withCount('skills')->latest()->paginate(15);
+
         return view('admin.categories', compact('categories'));
     }
 
@@ -163,6 +181,8 @@ class AdminController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
+        Cache::forget('job_categories_all');
+
         return redirect()->back()->with('success', 'Kategori baru berhasil ditambahkan.');
     }
 
@@ -175,18 +195,25 @@ class AdminController extends Controller
         ]);
 
         $category->update($validated);
+
+        Cache::forget('job_categories_all');
+
         return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroyCategory(SkillCategory $category)
     {
         $category->delete();
+
+        Cache::forget('job_categories_all');
+
         return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
     }
 
     public function reports(Request $request)
     {
         $reports = Report::with('reporter')->latest()->paginate(15);
+
         return view('admin.reports', compact('reports'));
     }
 
@@ -197,6 +224,7 @@ class AdminController extends Controller
             'resolved_by' => auth()->id(),
             'resolved_at' => now(),
         ]);
+
         return redirect()->back()->with('success', 'Laporan berhasil ditandai selesai.');
     }
 
@@ -207,18 +235,21 @@ class AdminController extends Controller
             'resolved_by' => auth()->id(),
             'resolved_at' => now(),
         ]);
+
         return redirect()->back()->with('success', 'Laporan diabaikan.');
     }
 
     public function reviews()
     {
         $reviews = Review::with('reviewer', 'reviewee', 'project')->latest()->paginate(15);
+
         return view('admin.reviews', compact('reviews'));
     }
 
     public function destroyReview(Review $review)
     {
         $review->delete();
+
         return redirect()->back()->with('success', 'Ulasan berhasil dihapus.');
     }
 }

@@ -6,9 +6,9 @@ use App\Enums\JobStatus;
 use App\Enums\UserRole;
 use App\Models\JobListing;
 use App\Models\Skill;
-use App\Models\SkillCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PublicController extends Controller
 {
@@ -22,30 +22,41 @@ class PublicController extends Controller
 
         $topTalents = User::where('role', UserRole::TALENT)
             ->with(['skills', 'portfolioItems'])
+            ->withAvg('reviewsReceived', 'rating')
             ->latest()
             ->take(8)
             ->get();
 
-        $talentCount = User::where('role', UserRole::TALENT)->count();
-        $jobCount = JobListing::where('status', JobStatus::OPEN)->count();
-        $skillCount = Skill::count();
+        $stats = Cache::remember('home_platform_stats', 300, function () {
+            return [
+                'talentCount' => User::where('role', UserRole::TALENT)->count(),
+                'jobCount' => JobListing::where('status', JobStatus::OPEN)->count(),
+                'skillCount' => Skill::count(),
+            ];
+        });
+
+        $talentCount = $stats['talentCount'];
+        $jobCount = $stats['jobCount'];
+        $skillCount = $stats['skillCount'];
 
         return view('public.home', compact('featuredJobs', 'topTalents', 'talentCount', 'jobCount', 'skillCount'));
     }
 
     public function talents(Request $request)
     {
-        $query = User::where('role', UserRole::TALENT)->with(['skills.category', 'portfolioItems']);
+        $query = User::where('role', UserRole::TALENT)
+            ->with(['skills.category', 'portfolioItems'])
+            ->withAvg('reviewsReceived', 'rating');
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('bio', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
-                  ->orWhereHas('skills', function ($sq) use ($search) {
-                      $sq->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('bio', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhereHas('skills', function ($sq) use ($search) {
+                        $sq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -56,7 +67,9 @@ class PublicController extends Controller
         }
 
         $talents = $query->latest()->paginate(12)->withQueryString();
-        $skills = Skill::orderBy('name')->get();
+        $skills = Cache::remember('public_talents_skills_list', 3600, function () {
+            return Skill::orderBy('name')->get();
+        });
 
         return view('public.talents', compact('talents', 'skills'));
     }
