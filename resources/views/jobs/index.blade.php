@@ -47,9 +47,15 @@
                         <select name="category_id" class="w-full px-3 py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all">
                             <option value="">Semua Kategori</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
+                                @php
+                                    $catId = is_object($category) ? $category->id : (is_array($category) ? ($category['id'] ?? '') : '');
+                                    $catName = is_object($category) ? $category->name : (is_array($category) ? ($category['name'] ?? '') : $category);
+                                @endphp
+                                @if($catId)
+                                    <option value="{{ $catId }}" {{ request('category_id') == $catId ? 'selected' : '' }}>
+                                        {{ $catName }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                     </div>

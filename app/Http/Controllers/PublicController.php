@@ -67,9 +67,7 @@ class PublicController extends Controller
         }
 
         $talents = $query->latest()->paginate(12)->withQueryString();
-        $skills = Cache::remember('public_talents_skills_list', 3600, function () {
-            return Skill::orderBy('name')->get();
-        });
+        $skills = Skill::orderBy('name')->get();
 
         return view('public.talents', compact('talents', 'skills'));
     }

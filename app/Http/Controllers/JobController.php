@@ -77,12 +77,8 @@ class JobController extends Controller
         }
 
         $jobs = $query->paginate(12)->withQueryString();
-        $categories = Cache::remember('job_categories_all', 3600, function () {
-            return SkillCategory::orderBy('name')->get();
-        });
-        $skills = Cache::remember('job_skills_all', 3600, function () {
-            return Skill::orderBy('name')->get();
-        });
+        $categories = SkillCategory::orderBy('name')->get();
+        $skills = Skill::orderBy('name')->get();
 
         return view('jobs.index', compact('jobs', 'categories', 'skills'));
     }
