@@ -4,13 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="KerjaKampus adalah platform marketplace freelance, gig, dan proyek karier mahasiswa Indonesia. Hubungkan talenta kampus dengan klien dan industri terpercaya.">
     <meta name="author" content="Farkhan Nabiel Makarim">
     <meta name="developer" content="Farkhan Nabiel Makarim">
     <meta name="copyright" content="KerjaKampus - Farkhan Nabiel Makarim">
     <meta name="application-name" content="KerjaKampus">
+    <link rel="canonical" href="{{ url()->current() }}">
+
     <meta property="og:site_name" content="KerjaKampus">
     <meta property="og:title" content="KerjaKampus - Platform Karier & Marketplace Mahasiswa">
     <meta property="og:description" content="Platform marketplace freelance dan proyek karier mahasiswa Indonesia. Dirancang dan dibangun oleh Farkhan Nabiel Makarim.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
 
     <title>@yield('title', 'KerjaKampus - Platform Karier & Marketplace Mahasiswa')</title>
 
@@ -19,16 +24,20 @@
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Non-render-blocking with display=swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+    </noscript>
 
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <!-- Alpine.js (fallback if not in app.js) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js (Local bundle for fast 0-latency execution) -->
+    <script defer src="{{ asset('js/alpine.min.js') }}"></script>
 
     <style>
         body {
@@ -244,7 +253,7 @@
                                     type="button" 
                                     class="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
                                 @if(Auth::user()->avatar)
-                                    <img class="h-8 w-8 rounded-xl object-cover ring-1 ring-slate-200" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                    <img class="h-8 w-8 rounded-xl object-cover ring-1 ring-slate-200" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" width="32" height="32" loading="lazy" decoding="async">
                                 @else
                                     <div class="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-xs shadow-xs">
                                         {{ substr(Auth::user()->name, 0, 1) }}

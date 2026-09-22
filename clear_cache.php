@@ -93,6 +93,25 @@ if (is_dir($bootstrapCacheDir)) {
     $results[] = "<span class='success'>✅ Berhasil membersihkan bootstrap cache ({$deletedBootCache} file).</span>";
 }
 
+// 4b. BERSIHKAN FRAMEWORK DATA CACHE (storage/framework/cache/data)
+$cacheDataDir = $baseDir . '/storage/framework/cache/data';
+if (is_dir($cacheDataDir)) {
+    $it = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($cacheDataDir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    $deletedCacheFiles = 0;
+    foreach ($it as $file) {
+        if ($file->isDir()) {
+            @rmdir($file->getRealPath());
+        } else {
+            @unlink($file->getRealPath());
+            $deletedCacheFiles++;
+        }
+    }
+    $results[] = "<span class='success'>✅ Berhasil membersihkan framework data cache ({$deletedCacheFiles} file).</span>";
+}
+
 // 5. BERSIHKAN OPCACHE JIKA ADA
 if (function_exists('opcache_reset')) {
     @opcache_reset();

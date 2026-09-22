@@ -27,17 +27,9 @@ class PublicController extends Controller
             ->take(8)
             ->get();
 
-        $stats = Cache::remember('home_platform_stats', 300, function () {
-            return [
-                'talentCount' => User::where('role', UserRole::TALENT)->count(),
-                'jobCount' => JobListing::where('status', JobStatus::OPEN)->count(),
-                'skillCount' => Skill::count(),
-            ];
-        });
-
-        $talentCount = $stats['talentCount'];
-        $jobCount = $stats['jobCount'];
-        $skillCount = $stats['skillCount'];
+        $talentCount = User::where('role', UserRole::TALENT)->count();
+        $jobCount = JobListing::where('status', JobStatus::OPEN)->count();
+        $skillCount = Skill::count();
 
         return view('public.home', compact('featuredJobs', 'topTalents', 'talentCount', 'jobCount', 'skillCount'));
     }

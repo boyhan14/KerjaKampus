@@ -313,8 +313,8 @@
 
                     <!-- Job Title -->
                     <h3 class="text-lg font-black text-slate-900 mb-2 leading-snug line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                        <a href="{{ route('jobs.show', $job->slug ?? $job->id) }}">
-                            {{ $job->title }}
+                        <a href="{{ route('jobs.show', is_object($job) ? ($job->slug ?? $job->id) : $job) }}">
+                            {{ is_object($job) ? $job->title : $job }}
                         </a>
                     </h3>
 
@@ -350,7 +350,7 @@
                 <!-- Footer Card -->
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
                     <span>Deadline: {{ $job->deadline ? \Carbon\Carbon::parse($job->deadline)->format('d M Y') : 'Fleksibel' }}</span>
-                    <a href="{{ route('jobs.show', $job->slug ?? $job->id) }}" class="font-black text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1 group-hover:translate-x-1">
+                    <a href="{{ route('jobs.show', is_object($job) ? ($job->slug ?? $job->id) : $job) }}" class="font-black text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1 group-hover:translate-x-1">
                         Detail &rarr;
                     </a>
                 </div>
@@ -564,7 +564,7 @@
                     <!-- Avatar with Hover Zoom -->
                     <div class="relative w-20 h-20 mx-auto mb-4">
                         @if($talent->avatar)
-                            <img class="w-20 h-20 rounded-2xl object-cover ring-2 ring-indigo-50 group-hover:scale-105 transition-transform" src="{{ asset('storage/' . $talent->avatar) }}" alt="{{ $talent->name }}">
+                            <img class="w-20 h-20 rounded-2xl object-cover ring-2 ring-indigo-50 group-hover:scale-105 transition-transform" src="{{ asset('storage/' . $talent->avatar) }}" alt="{{ $talent->name }}" width="80" height="80" loading="lazy" decoding="async">
                         @else
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-2xl shadow-xs group-hover:scale-105 transition-transform">
                                 {{ substr($talent->name ?? 'A', 0, 1) }}
@@ -576,13 +576,13 @@
                     </div>
 
                     <h3 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                        <a href="{{ route('talents.show', $talent->username ?? $talent->id) }}">{{ $talent->name }}</a>
+                        <a href="{{ route('talents.show', is_object($talent) ? ($talent->username ?? $talent->id) : $talent) }}">{{ is_object($talent) ? $talent->name : $talent }}</a>
                     </h3>
-                    <p class="text-xs text-slate-500 mb-3">{{ $talent->location ?? 'Indonesia' }}</p>
+                    <p class="text-xs text-slate-500 mb-3">{{ is_object($talent) ? ($talent->location ?? 'Indonesia') : 'Indonesia' }}</p>
 
                     <!-- Rating Stars -->
                     <div class="flex items-center justify-center gap-1 text-amber-400 mb-3">
-                        @php $avgRating = method_exists($talent, 'averageRating') ? $talent->averageRating() : 5; @endphp
+                        @php $avgRating = (is_object($talent) && method_exists($talent, 'averageRating')) ? $talent->averageRating() : 5; @endphp
                         @for($i=1; $i<=5; $i++)
                             <svg class="w-3.5 h-3.5 {{ $i <= ($avgRating > 0 ? $avgRating : 5) ? 'fill-current' : 'text-slate-200' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                         @endfor
@@ -590,20 +590,20 @@
                     </div>
 
                     <p class="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
-                        {{ $talent->bio ?? 'Mahasiswa antusias yang siap mengerjakan proyek dengan penuh dedikasi.' }}
+                        {{ is_object($talent) ? ($talent->bio ?? 'Mahasiswa antusias yang siap mengerjakan proyek dengan penuh dedikasi.') : '' }}
                     </p>
 
                     <!-- Skills -->
                     <div class="flex flex-wrap justify-center gap-1.5 mb-6">
-                        @foreach(collect($talent->skills ?? [])->take(3) as $skill)
+                        @foreach(collect(is_object($talent) ? ($talent->skills ?? []) : [])->take(3) as $skill)
                             <span class="px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-semibold">
-                                {{ $skill->name ?? $skill }}
+                                {{ is_object($skill) ? ($skill->name ?? $skill) : $skill }}
                             </span>
                         @endforeach
                     </div>
                 </div>
 
-                <a href="{{ route('talents.show', $talent->username ?? $talent->id) }}" class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all">
+                <a href="{{ route('talents.show', is_object($talent) ? ($talent->username ?? $talent->id) : $talent) }}" class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all">
                     Lihat Profil & Portofolio
                 </a>
             </div>
