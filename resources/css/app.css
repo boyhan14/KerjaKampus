@@ -189,10 +189,15 @@
     to   { transform: translate3d(-50%, 0, 0); }
 }
 
+@keyframes ticker-scroll-reverse {
+    from { transform: translate3d(-50%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+}
+
 .ticker-track {
     display: flex;
     width: max-content;
-    animation: ticker-scroll 40s linear infinite;
+    animation: ticker-scroll 35s linear infinite;
     will-change: transform;
 }
 
@@ -200,9 +205,20 @@
     animation-play-state: paused;
 }
 
+.ticker-track-reverse {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll-reverse 40s linear infinite;
+    will-change: transform;
+}
+
+.ticker-track-reverse:hover {
+    animation-play-state: paused;
+}
+
 .ticker-fade {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
 }
 
 /* ================================================================

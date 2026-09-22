@@ -3,6 +3,35 @@
 @section('title', 'KerjaKampus - Platform Karier & Marketplace Proyek Mahasiswa')
 
 @section('content')
+<!-- Top Announcement Running Text (Marquee Ticker) -->
+<div class="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 text-white py-2.5 overflow-hidden border-b border-indigo-900/40 relative z-20 shadow-inner">
+    <div class="ticker-fade relative w-full overflow-hidden">
+        <div class="ticker-track flex items-center gap-8 whitespace-nowrap text-xs font-semibold">
+            @for($repeat = 0; $repeat < 2; $repeat++)
+                <div class="flex items-center gap-8 shrink-0">
+                    <span class="inline-flex items-center gap-2 text-indigo-300 font-bold bg-indigo-900/60 px-2.5 py-0.5 rounded-full border border-indigo-700/50">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span>INFO TERKINI</span>
+                    </span>
+                    <span class="text-slate-200">🔥 <strong class="text-white font-extrabold">100% Bebas Biaya Komisi</strong> untuk Klien & Mahasiswa Periode Launching!</span>
+                    <span class="text-indigo-400/50">•</span>
+                    <span class="text-slate-200">🎓 Terhubung dengan Mahasiswa dari <strong class="text-white font-extrabold">50+ Perguruan Tinggi</strong> Seluruh Indonesia</span>
+                    <span class="text-indigo-400/50">•</span>
+                    <span class="text-slate-200">⚡ Ratusan Peluang Proyek Freelance, Gig & Magang Dibuka Setiap Hari</span>
+                    <span class="text-indigo-400/50">•</span>
+                    <span class="text-slate-200">🛡️ Kontrak Kerja Kolaborasi Aman & Transparan</span>
+                    <span class="text-indigo-400/50">•</span>
+                    <span class="text-slate-200">🚀 Bangun Portofolio Nyata Sebelum Wisuda & Dapatkan Cuan Mandiri</span>
+                    <span class="text-indigo-400/50">•</span>
+                </div>
+            @endfor
+        </div>
+    </div>
+</div>
+
 <!-- Hero Section with Ambient Background & Floating Badges -->
 <section class="relative overflow-hidden pt-14 pb-24 lg:pt-24 lg:pb-36 bg-gradient-to-b from-indigo-50/40 via-white to-slate-50">
     <!-- Ambient Morphing Blobs -->
@@ -154,6 +183,94 @@
                 <p class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">100%</p>
                 <p class="text-xs font-bold text-slate-500">Proyek Terverifikasi</p>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- Full-Width Interactive Running Text (Skill & Campus Marquee) -->
+<section class="py-14 bg-white border-y border-slate-200/80 overflow-hidden relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-2 border border-indigo-100/60">
+            <span>✨ Bidang Spesialisasi & Jaringan Kampus</span>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Keahlian Populer & Kolaborasi Universitas Indonesia</h3>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Dapatkan talenta mahasiswa terverifikasi dari puluhan perguruan tinggi unggulan.</p>
+    </div>
+
+    <!-- Ticker Row 1: Trending Skills & Roles (Scrolls Left) -->
+    <div class="ticker-fade relative w-full overflow-hidden mb-3.5">
+        <div class="ticker-track flex items-center gap-3 whitespace-nowrap">
+            @for($repeat = 0; $repeat < 2; $repeat++)
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>🚀</span> Fullstack Web Developer (Laravel, Vue & React)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>🎨</span> UI/UX Designer & Figma Interactive Prototype
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>📱</span> Mobile Apps Developer (Flutter & Kotlin)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>🎬</span> Video Editor Reels, TikTok & Motion Graphics
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>🤖</span> AI Prompt Engineer & Business Automation
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>📊</span> Data Analyst & Python Scraper
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>✍️</span> SEO Content Writer & Copywriter
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>📢</span> Social Media Specialist & Ads Campaign
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-300 text-xs font-bold text-slate-800 transition-colors shadow-2xs">
+                        <span>🖌️</span> 3D Illustration & Visual Branding Identity
+                    </span>
+                </div>
+            @endfor
+        </div>
+    </div>
+
+    <!-- Ticker Row 2: Campus Network (Scrolls Right - Reverse) -->
+    <div class="ticker-fade relative w-full overflow-hidden">
+        <div class="ticker-track-reverse flex items-center gap-3 whitespace-nowrap">
+            @for($repeat = 0; $repeat < 2; $repeat++)
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Indonesia (UI)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Institut Teknologi Bandung (ITB)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Gadjah Mada (UGM)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Institut Teknologi Sepuluh Nopember (ITS)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Diponegoro (Undip)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Brawijaya (UB)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Binus University
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Telkom University
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Airlangga (Unair)
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/70 border border-indigo-100 text-xs font-bold text-indigo-900 shadow-2xs transition-colors">
+                        <span>🏛️</span> Universitas Padjadjaran (Unpad)
+                    </span>
+                </div>
+            @endfor
         </div>
     </div>
 </section>
