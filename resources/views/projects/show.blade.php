@@ -1,12 +1,14 @@
 @extends('layouts.dashboard')
 
-@section('title', $project->title . ' - KerjaKampus')
+@section('title', $project->title . ' - Detail Proyek KerjaKampus')
 
 @section('dashboard-content')
 <div class="max-w-4xl mx-auto space-y-6" x-data="{ reviewModal: false }">
+    <!-- Top Nav / Back -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('projects.index') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1">
-            &larr; Kembali ke Daftar Proyek
+        <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>Kembali ke Daftar Proyek</span>
         </a>
         
         @php
@@ -18,7 +20,7 @@
             };
         @endphp
         <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border {{ $statusBadge }}">
-            <span class="w-1.5 h-1.5 rounded-full {{ ($project->status->value ?? $project->status) === 'active' ? 'bg-emerald-500' : 'bg-current' }}"></span>
+            <span class="w-1.5 h-1.5 rounded-full {{ ($project->status->value ?? $project->status) === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-current' }}"></span>
             Status: {{ ucfirst($project->status->value ?? $project->status) }}
         </span>
     </div>
@@ -26,6 +28,12 @@
     <!-- Main Project Card -->
     <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-9 space-y-8 shadow-xs">
         <div class="space-y-2 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-2 text-xs text-indigo-600 font-bold uppercase tracking-wider">
+                <span>Kontrak Kerja Kolaborasi</span>
+                @if(Auth::user()->isAdmin())
+                    <span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px]">Tampilan Admin</span>
+                @endif
+            </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">{{ $project->title }}</h1>
             <p class="text-xs text-slate-400">
                 Dimulai sejak {{ $project->started_at ? $project->started_at->format('d F Y') : '-' }}
@@ -37,29 +45,37 @@
 
         <!-- Participants info cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-lg uppercase shrink-0">
+            <!-- Client Card -->
+            <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-100 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-lg uppercase shrink-0 shadow-xs">
                     {{ substr($project->client?->name ?? 'C', 0, 1) }}
                 </div>
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pemberi Kerja (Klien)</span>
                     <h4 class="font-bold text-slate-900 text-sm truncate">{{ $project->client?->name }}</h4>
                     <p class="text-xs text-slate-500 truncate">{{ $project->client?->company_name ?? ($project->client?->location ?? 'Indonesia') }}</p>
+                    @if($project->client?->email)
+                        <a href="mailto:{{ $project->client->email }}" class="text-[11px] text-indigo-600 hover:underline block truncate mt-0.5">{{ $project->client->email }}</a>
+                    @endif
                 </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 font-black flex items-center justify-center text-lg uppercase shrink-0">
+            <!-- Talent Card -->
+            <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-100 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 font-black flex items-center justify-center text-lg uppercase shrink-0 shadow-xs">
                     {{ substr($project->talent?->name ?? 'T', 0, 1) }}
                 </div>
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pelaksana (Talenta)</span>
                     <h4 class="font-bold text-slate-900 text-sm truncate">
-                        <a href="{{ route('talents.show', $project->talent?->username ?? $project->talent?->id) }}" class="hover:text-indigo-600 underline">
+                        <a href="{{ route('talents.show', $project->talent?->username ?? $project->talent?->id) }}" class="hover:text-indigo-600 hover:underline">
                             {{ $project->talent?->name }}
                         </a>
                     </h4>
                     <p class="text-xs text-slate-500 truncate">{{ $project->talent?->education ?? ($project->talent?->location ?? 'Indonesia') }}</p>
+                    @if($project->talent?->email)
+                        <a href="mailto:{{ $project->talent->email }}" class="text-[11px] text-indigo-600 hover:underline block truncate mt-0.5">{{ $project->talent->email }}</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -89,8 +105,8 @@
         <!-- Description / Brief -->
         @if($project->description)
             <div class="space-y-2">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Brief / Ruang Lingkup Proyek</h3>
-                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Brief / Ruang Lingkup Kontrak</h3>
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
                     {{ $project->description }}
                 </div>
             </div>
@@ -99,15 +115,15 @@
         <!-- Action Controls -->
         @if(($project->status->value ?? $project->status) === 'active')
             <div class="pt-6 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
-                <form action="{{ route('projects.complete', $project->id) }}" method="POST" onsubmit="return confirm('Tandai proyek ini sebagai selesai? Kedua belah pihak dapat saling memberikan rating dan ulasan.');">
+                <form action="{{ route('projects.complete', $project->id) }}" method="POST" onsubmit="return confirm('Tandai proyek ini sebagai selesai? Setelah selesai, Anda dapat saling memberikan ulasan dan rating.');">
                     @csrf
                     <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-sm flex items-center gap-2 transition-all btn-press">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        Tandai Proyek Selesai
+                        <span>Tandai Proyek Selesai</span>
                     </button>
                 </form>
 
-                <form action="{{ route('projects.cancel', $project->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan kontrak proyek ini?');">
+                <form action="{{ route('projects.cancel', $project->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan kontrak proyek ini? Tindakan ini tidak dapat diurungkan.');">
                     @csrf
                     <button type="submit" class="px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl border border-rose-200 transition-colors">
                         Batalkan Proyek
@@ -122,23 +138,23 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="font-bold text-slate-900 text-base">Ulasan & Rating Proyek</h3>
-                        <p class="text-xs text-slate-400">Feedback objektif hasil kerja sama</p>
+                        <p class="text-xs text-slate-400">Feedback performa hasil kolaborasi kedua belah pihak.</p>
                     </div>
                     
                     @php
                         $hasReviewed = $project->reviews->where('reviewer_id', Auth::id())->isNotEmpty();
                     @endphp
 
-                    @if(!$hasReviewed)
+                    @if(!$hasReviewed && !Auth::user()->isAdmin())
                         <button @click="reviewModal = true" class="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all btn-press">
-                            + Tulis Ulasan
+                            + Tulis Ulasan & Rating
                         </button>
                     @endif
                 </div>
 
                 @if($project->reviews->isEmpty())
                     <div class="p-6 text-center bg-slate-50 rounded-2xl border border-slate-100">
-                        <p class="text-xs text-slate-400">Belum ada ulasan untuk proyek ini. Klik tombol di atas untuk memberikan feedback!</p>
+                        <p class="text-xs text-slate-400">Belum ada ulasan untuk proyek ini. Berikan ulasan objektif mengenai kepuasan kerja sama!</p>
                     </div>
                 @else
                     <div class="space-y-3">
@@ -178,8 +194,8 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Rating Bintang (1 - 5)</label>
                     <select name="rating" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none">
-                        <option value="5">★★★★★ - 5 (Sempurna & Profesional)</option>
-                        <option value="4">★★★★☆ - 4 (Sangat Bagus)</option>
+                        <option value="5">★★★★★ - 5 (Sempurna & Sangat Profesional)</option>
+                        <option value="4">★★★★☆ - 4 (Sangat Bagus & Tepat Waktu)</option>
                         <option value="3">★★★☆☆ - 3 (Cukup Memuaskan)</option>
                         <option value="2">★★☆☆☆ - 2 (Perlu Peningkatan)</option>
                         <option value="1">★☆☆☆☆ - 1 (Kurang Memuaskan)</option>

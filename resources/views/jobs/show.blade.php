@@ -3,7 +3,10 @@
 @section('title', $job->title . ' - KerjaKampus')
 
 @section('content')
-<div class="bg-slate-50 min-h-screen py-8 sm:py-12" x-data="{ applyModal: false, reportModal: false }">
+<div class="relative bg-slate-50 min-h-screen py-8 sm:py-12 overflow-hidden" x-data="{ applyModal: false, reportModal: false }">
+    <!-- Ambient Lighting -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/15 to-pink-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         <!-- Breadcrumbs -->
@@ -25,7 +28,7 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- Main Job Card -->
-                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-10 shadow-xs space-y-8">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-10 shadow-xs space-y-8 box-shine">
                     
                     <!-- Header Badges & Title -->
                     <div class="space-y-4">
@@ -124,10 +127,10 @@
             <!-- Right Column: Sticky Apply & Meta Box -->
             <div class="lg:col-span-1 space-y-6">
                 
-                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs space-y-6 sticky top-24">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs space-y-6 sticky top-24 box-shine premium-border">
                     
                     <!-- Budget Section -->
-                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/40 border border-indigo-100/60">
                         <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1">Kompensasi Proyek</span>
                         <div class="text-2xl font-black text-indigo-600">
                             Rp {{ number_format($job->budget_min, 0, ',', '.') }}
@@ -140,12 +143,12 @@
                     <!-- Action Button Area -->
                     <div>
                         @guest
-                            <a href="{{ route('login') }}" class="block w-full text-center px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition-all btn-press">
+                            <a href="{{ route('login') }}" class="block w-full text-center px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition-all btn-press btn-shine">
                                 Masuk untuk Melamar
                             </a>
                         @else
                             @if(Auth::id() === $job->user_id)
-                                <a href="{{ route('applications.job', $job->id) }}" class="block w-full text-center px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition-all">
+                                <a href="{{ route('applications.job', $job->id) }}" class="block w-full text-center px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition-all btn-shine">
                                     Kelola Pelamar ({{ $job->applications()->count() }})
                                 </a>
                             @elseif($hasApplied)
@@ -165,7 +168,7 @@
                                     Akun Klien tidak dapat melamar lowongan.
                                 </div>
                             @else
-                                <button @click="applyModal = true" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/25 transition-all btn-press">
+                                <button @click="applyModal = true" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 transition-all btn-press btn-shine animate-glow-pulse">
                                     Ajukan Lamaran Sekarang
                                 </button>
                             @endif

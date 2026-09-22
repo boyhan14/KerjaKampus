@@ -180,3 +180,200 @@
 .animate-scanline {
     animation: scanline 4s linear infinite;
 }
+
+/* ================================================================
+   ✦ PREMIUM MARQUEE TICKER — Smooth Infinite Scroll
+   ================================================================ */
+@keyframes ticker-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll 40s linear infinite;
+    will-change: transform;
+}
+
+.ticker-track:hover {
+    animation-play-state: paused;
+}
+
+.ticker-fade {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+}
+
+/* ================================================================
+   ✦ LUXURY DIAMOND SHINE — Button Gleam Effect
+   Swipe diagonal "diamond cut" light across any button.
+   ================================================================ */
+@keyframes diamond-shine {
+    0%   { transform: translateX(-180%) rotate(35deg); }
+    15%  { transform: translateX(280%) rotate(35deg); }
+    100% { transform: translateX(280%) rotate(35deg); }
+}
+
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.btn-shine::after {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    width: 45%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.08) 25%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.08) 75%,
+        transparent 100%
+    );
+    animation: diamond-shine 5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* White-button variant (uses darker shine) */
+.btn-shine-dark::after {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(99, 102, 241, 0.06) 25%,
+        rgba(99, 102, 241, 0.25) 50%,
+        rgba(99, 102, 241, 0.06) 75%,
+        transparent 100%
+    );
+}
+
+/* ================================================================
+   ✦ IRIDESCENT CARD GLEAM — Hover Light Sweep
+   A subtle holographic / iridescent wipe on hover.
+   ================================================================ */
+.box-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.box-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.15) 35%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.15) 65%,
+        transparent 80%
+    );
+    transform: skewX(-20deg);
+    transition: left 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.box-shine:hover::before {
+    left: 180%;
+}
+
+/* Dark card variant — indigo tint instead of white */
+.box-shine-dark::before {
+    background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(129, 140, 248, 0.08) 35%,
+        rgba(129, 140, 248, 0.3) 50%,
+        rgba(129, 140, 248, 0.08) 65%,
+        transparent 80%
+    );
+}
+
+/* ================================================================
+   ✦ AMBIENT GLOW PULSE — Luxury Neon Breathing Effect
+   A subtle breathing shadow glow for key CTA elements.
+   ================================================================ */
+@keyframes glow-breathe {
+    0%, 100% {
+        box-shadow:
+            0 0 20px -4px rgba(99, 102, 241, 0.3),
+            0 0 6px -2px rgba(139, 92, 246, 0.15),
+            0 4px 12px -2px rgba(0, 0, 0, 0.08);
+    }
+    50% {
+        box-shadow:
+            0 0 36px 2px rgba(99, 102, 241, 0.55),
+            0 0 14px 0px rgba(139, 92, 246, 0.3),
+            0 8px 20px -2px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.animate-glow-pulse {
+    animation: glow-breathe 3.5s ease-in-out infinite;
+}
+
+/* Gold/amber variant for special elements */
+@keyframes glow-gold {
+    0%, 100% {
+        box-shadow:
+            0 0 16px -4px rgba(245, 158, 11, 0.3),
+            0 4px 10px -2px rgba(0, 0, 0, 0.06);
+    }
+    50% {
+        box-shadow:
+            0 0 30px 2px rgba(245, 158, 11, 0.5),
+            0 8px 16px -2px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.animate-glow-gold {
+    animation: glow-gold 3s ease-in-out infinite;
+}
+
+/* ================================================================
+   ✦ PREMIUM BORDER SHIMMER — Gold Border Animation
+   A thin gold line that travels around the card border.
+   ================================================================ */
+@keyframes border-travel {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.premium-border {
+    position: relative;
+}
+
+.premium-border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(
+        270deg,
+        rgba(99, 102, 241, 0.4),
+        rgba(168, 85, 247, 0.5),
+        rgba(236, 72, 153, 0.3),
+        rgba(245, 158, 11, 0.4),
+        rgba(168, 85, 247, 0.5),
+        rgba(99, 102, 241, 0.4)
+    );
+    background-size: 300% 100%;
+    animation: border-travel 6s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+}
+

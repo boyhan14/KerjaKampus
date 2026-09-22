@@ -95,7 +95,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md shadow-indigo-500/20 transition-all btn-press">
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md shadow-indigo-500/20 transition-all btn-press btn-shine">
                         Terapkan Filter
                     </button>
                 </form>
@@ -138,7 +138,7 @@
                     <!-- Jobs Grid Cards -->
                     <div class="space-y-4">
                         @foreach($jobs as $job)
-                            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover flex flex-col justify-between">
+                            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover box-shine flex flex-col justify-between">
                                 <div class="space-y-3.5">
                                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                         <div>

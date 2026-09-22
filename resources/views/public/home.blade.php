@@ -73,7 +73,7 @@
 
             <!-- Dual Action CTAs with Shimmer Hover -->
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-                <a href="{{ url('/jobs') }}" class="relative group overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black text-sm sm:text-base shadow-xl shadow-indigo-600/25 hover:shadow-2xl hover:shadow-indigo-600/35 transition-all btn-press">
+                <a href="{{ url('/jobs') }}" class="relative group overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black text-sm sm:text-base shadow-xl shadow-indigo-600/25 hover:shadow-2xl hover:shadow-indigo-600/35 transition-all btn-press btn-shine animate-glow-pulse">
                     <!-- Shimmer light reflection effect -->
                     <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></span>
                     <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,7 +82,7 @@
                     <span>Cari Proyek Tersedia</span>
                 </a>
 
-                <a href="{{ url('/register') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white border-2 border-slate-200/90 hover:border-indigo-400 text-slate-800 hover:text-indigo-600 hover:bg-slate-50 font-bold text-sm sm:text-base shadow-xs hover:shadow-md transition-all btn-press">
+                <a href="{{ url('/register') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white border-2 border-slate-200/90 hover:border-indigo-400 text-slate-800 hover:text-indigo-600 hover:bg-slate-50 font-bold text-sm sm:text-base shadow-xs hover:shadow-md transition-all btn-press box-shine">
                     <span>Pasang Lowongan / Rekrut</span>
                     <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -115,7 +115,7 @@
 
 <!-- Floating Platform Stats -->
 <section class="relative z-20 -mt-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl shadow-indigo-600/10 border border-slate-200/80 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl shadow-indigo-600/10 border border-slate-200/80 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 box-shine premium-border">
         <div class="flex items-center gap-4 group p-2 rounded-2xl hover:bg-slate-50/80 transition-colors">
             <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -177,7 +177,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($featuredJobs ?? [] as $job)
-            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover flex flex-col justify-between hover:border-indigo-300 transition-all group">
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover box-shine flex flex-col justify-between hover:border-indigo-300 transition-all group">
                 <div>
                     <!-- Header Info & Category -->
                     <div class="flex items-start justify-between gap-3 mb-4">
@@ -365,7 +365,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <a href="{{ url('/register') }}" class="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-sm shadow-xl shadow-indigo-600/30 transition-all btn-press">
+                    <a href="{{ url('/register') }}" class="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-sm shadow-xl shadow-indigo-600/30 transition-all btn-press btn-shine animate-glow-pulse">
                         <span>Coba AI Assistant Sekarang</span>
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </a>
@@ -374,7 +374,7 @@
 
             <!-- AI Interactive Preview Card with Scanning Beam -->
             <div class="lg:w-1/2 w-full">
-                <div class="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-slate-900/95 border border-slate-800 shadow-2xl space-y-4">
+                <div class="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-slate-900/95 border border-slate-800 shadow-2xl space-y-4 box-shine box-shine-dark animate-glow-pulse">
                     <!-- Laser scanline animation -->
                     <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-50 animate-scanline pointer-events-none"></div>
 
@@ -509,10 +509,10 @@
             Bergabunglah dengan ekosistem KerjaKampus hari ini. Gratis pendaftaran untuk talenta maupun klien.
         </p>
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-2">
-            <a href="{{ url('/register') }}" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-indigo-700 font-black text-sm shadow-xl hover:bg-slate-50 transition-all btn-press">
+            <a href="{{ url('/register') }}" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-indigo-700 font-black text-sm shadow-xl hover:bg-slate-50 transition-all btn-press btn-shine btn-shine-dark animate-glow-gold">
                 Daftar Akun Sekarang
             </a>
-            <a href="{{ url('/jobs') }}" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-500/30 border border-white/30 text-white font-bold text-sm hover:bg-indigo-500/40 transition-all">
+            <a href="{{ url('/jobs') }}" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-500/30 border border-white/30 text-white font-bold text-sm hover:bg-indigo-500/40 transition-all btn-shine">
                 Cari Proyek
             </a>
         </div>

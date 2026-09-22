@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="author" content="Farkhan Nabiel Makarim">
+    <meta name="developer" content="Farkhan Nabiel Makarim">
+    <meta name="copyright" content="KerjaKampus - Farkhan Nabiel Makarim">
+    <meta name="application-name" content="KerjaKampus">
+    <meta property="og:site_name" content="KerjaKampus">
+    <meta property="og:title" content="KerjaKampus - Platform Karier & Marketplace Mahasiswa">
+    <meta property="og:description" content="Platform marketplace freelance dan proyek karier mahasiswa Indonesia. Dirancang dan dibangun oleh Farkhan Nabiel Makarim.">
 
     <title>@yield('title', 'KerjaKampus - Platform Karier & Marketplace Mahasiswa')</title>
 
@@ -127,7 +134,7 @@
                         <a href="{{ route('login') }}" class="px-4 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 rounded-xl transition-all duration-150">
                             Masuk
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-xl shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-150 btn-press">
+                        <a href="{{ route('register') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-xl shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-150 btn-press btn-shine">
                             <span>Daftar Gratis</span>
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -205,22 +212,20 @@
                                     </template>
 
                                     <template x-for="item in notifications" :key="item.id">
-                                        <div class="p-4 hover:bg-slate-50 transition-colors flex items-start justify-between gap-3" :class="{ 'bg-indigo-50/30': !item.is_read }">
+                                        <a :href="'/notifications/' + item.id" class="p-4 hover:bg-indigo-50/40 transition-colors flex items-start justify-between gap-3 group" :class="{ 'bg-indigo-50/30': !item.is_read }">
                                             <div class="space-y-1 min-w-0 flex-1">
                                                 <div class="flex items-center gap-1.5">
                                                     <span x-show="!item.is_read" class="w-2 h-2 rounded-full bg-indigo-600 shrink-0"></span>
-                                                    <h5 class="text-xs font-bold text-slate-900 truncate" :class="{ 'text-indigo-950': !item.is_read }" x-text="item.title"></h5>
+                                                    <h5 class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors truncate" :class="{ 'text-indigo-950 font-black': !item.is_read }" x-text="item.title"></h5>
                                                 </div>
                                                 <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed" x-text="item.message"></p>
-                                                <span class="text-[10px] text-slate-400 font-medium block" x-text="item.time"></span>
+                                                <div class="flex items-center gap-2 pt-0.5">
+                                                    <span class="text-[10px] text-slate-400 font-medium" x-text="item.time"></span>
+                                                    <span class="text-[10px] font-bold text-indigo-600 group-hover:underline">&bull; Buka & Baca &rarr;</span>
+                                                </div>
                                             </div>
-                                            <template x-if="!item.is_read">
-                                                <form :action="'/notifications/' + item.id + '/read'" method="POST" class="shrink-0">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <button type="submit" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-semibold px-2 py-1 rounded-md hover:bg-indigo-50 transition-colors">Baca</button>
-                                                </form>
-                                            </template>
-                                        </div>
+                                            <span class="text-slate-300 group-hover:text-indigo-600 transition-colors shrink-0 text-xs mt-1">&rarr;</span>
+                                        </a>
                                     </template>
                                 </div>
 
@@ -372,7 +377,7 @@
                     <a href="{{ route('login') }}" class="w-full text-center py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50">
                         Masuk
                     </a>
-                    <a href="{{ route('register') }}" class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-bold text-white shadow-md shadow-indigo-500/20">
+                    <a href="{{ route('register') }}" class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-bold text-white shadow-md shadow-indigo-500/20 btn-shine">
                         Daftar Gratis
                     </a>
                 </div>
@@ -399,6 +404,115 @@
             @endguest
         </div>
     </nav>
+
+    <!-- ✦ PREMIUM RUNNING TEXT / LIVE TICKER ✦ -->
+    <div style="position:relative;overflow:hidden;z-index:30;">
+        <!-- Animated gradient border line on top -->
+        <div style="height:2px;background:linear-gradient(90deg,#4f46e5,#a855f7,#ec4899,#f59e0b,#a855f7,#4f46e5);background-size:300% 100%;animation:ticker-border 4s linear infinite;"></div>
+        <style>@keyframes ticker-border{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+        <div style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);padding:10px 0;border-bottom:1px solid rgba(99,102,241,0.15);">
+            <div style="max-width:80rem;margin:0 auto;padding:0 1rem;display:flex;align-items:center;gap:12px;">
+
+                <!-- Premium Live Badge -->
+                <div style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(168,85,247,0.2));border:1px solid rgba(129,140,248,0.3);backdrop-filter:blur(8px);font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#c7d2fe;">
+                    <span style="position:relative;display:inline-flex;width:7px;height:7px;">
+                        <span style="position:absolute;inset:0;border-radius:9999px;background:#34d399;opacity:0.75;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></span>
+                        <span style="position:relative;display:inline-block;width:7px;height:7px;border-radius:9999px;background:#34d399;box-shadow:0 0 6px #34d399;"></span>
+                    </span>
+                    <style>@keyframes ping{75%,100%{transform:scale(2);opacity:0}}</style>
+                    <span>Live</span>
+                </div>
+
+                <!-- Ticker Track Container -->
+                <div style="overflow:hidden;flex:1;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%);">
+                    <div id="ticker-track" style="display:flex;width:max-content;animation:ticker-move 45s linear infinite;will-change:transform;">
+                        <style>@keyframes ticker-move{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}</style>
+
+                        <!-- Items Group 1 -->
+                        <div style="display:flex;align-items:center;gap:28px;white-space:nowrap;padding-right:28px;font-size:12px;color:#cbd5e1;">
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);font-size:11px;">🚀</span>
+                                <strong style="color:#e0e7ff;">Proyek Baru</strong>
+                                <span style="color:#94a3b8;">Fullstack Developer E-Learning — <span style="color:#a5b4fc;font-weight:700;">Rp 8.500.000</span></span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);font-size:11px;">⚡</span>
+                                <strong style="color:#e0e7ff;">1.250+ Talenta</strong>
+                                <span style="color:#94a3b8;">Mahasiswa aktif siap kerja & magang</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#d97706,#f59e0b);font-size:11px;">✨</span>
+                                <strong style="color:#fde68a;">Promo</strong>
+                                <span style="color:#94a3b8;">Komisi 0% untuk proyek pertama!</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);font-size:11px;">🤖</span>
+                                <strong style="color:#e0e7ff;">AI Copilot</strong>
+                                <span style="color:#94a3b8;">Analisis CV & Portfolio otomatis</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#38bdf8);font-size:11px;">🎓</span>
+                                <strong style="color:#e0e7ff;">50+ Kampus</strong>
+                                <span style="color:#94a3b8;">ITB, UI, UGM, ITS, BINUS, Telkom</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#e11d48,#f43f5e);font-size:11px;">⭐</span>
+                                <strong style="color:#e0e7ff;">Rating 4.9/5.0</strong>
+                                <span style="color:#94a3b8;">Dipercaya ribuan mahasiswa se-Indonesia</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                        </div>
+
+                        <!-- Items Group 2 (Duplicate for seamless loop) -->
+                        <div style="display:flex;align-items:center;gap:28px;white-space:nowrap;padding-right:28px;font-size:12px;color:#cbd5e1;">
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);font-size:11px;">🚀</span>
+                                <strong style="color:#e0e7ff;">Proyek Baru</strong>
+                                <span style="color:#94a3b8;">Fullstack Developer E-Learning — <span style="color:#a5b4fc;font-weight:700;">Rp 8.500.000</span></span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);font-size:11px;">⚡</span>
+                                <strong style="color:#e0e7ff;">1.250+ Talenta</strong>
+                                <span style="color:#94a3b8;">Mahasiswa aktif siap kerja & magang</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#d97706,#f59e0b);font-size:11px;">✨</span>
+                                <strong style="color:#fde68a;">Promo</strong>
+                                <span style="color:#94a3b8;">Komisi 0% untuk proyek pertama!</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);font-size:11px;">🤖</span>
+                                <strong style="color:#e0e7ff;">AI Copilot</strong>
+                                <span style="color:#94a3b8;">Analisis CV & Portfolio otomatis</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#38bdf8);font-size:11px;">🎓</span>
+                                <strong style="color:#e0e7ff;">50+ Kampus</strong>
+                                <span style="color:#94a3b8;">ITB, UI, UGM, ITS, BINUS, Telkom</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,#e11d48,#f43f5e);font-size:11px;">⭐</span>
+                                <strong style="color:#e0e7ff;">Rating 4.9/5.0</strong>
+                                <span style="color:#94a3b8;">Dipercaya ribuan mahasiswa se-Indonesia</span>
+                            </span>
+                            <span style="color:#334155;font-size:8px;">◆</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content Body -->
     <main class="flex-grow">
@@ -463,11 +577,20 @@
                 </div>
             </div>
 
-            <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-                <p>&copy; {{ date('Y') }} KerjaKampus Platform. Hak Cipta Dilindungi.</p>
-                <p class="flex items-center gap-1">
-                    Dibuat dengan sepenuh hati untuk mahasiswa & masa depan karier Indonesia 🇮🇩
-                </p>
+            <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>
+                    <p>&copy; {{ date('Y') }} KerjaKampus Platform. Hak Cipta Dilindungi.</p>
+                    <p class="text-[11px] text-slate-400 mt-1">
+                        Dirancang & Dikembangkan oleh <a href="https://github.com/boyhan14" target="_blank" rel="noopener noreferrer" class="font-bold text-slate-800 hover:text-indigo-600 transition-colors underline decoration-indigo-300 underline-offset-2">Farkhan Nabiel Makarim</a>
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 text-slate-400">
+                    <a href="https://github.com/boyhan14" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-200/80 px-3 py-1 rounded-xl transition-all shadow-2xs">
+                        <span>🚀 Created by Farkhan Nabiel Makarim</span>
+                        <span class="text-[9px] text-slate-400">&nearr;</span>
+                    </a>
+                    <span>🇮🇩 Indonesia</span>
+                </div>
             </div>
         </div>
     </footer>

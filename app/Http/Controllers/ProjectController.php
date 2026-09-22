@@ -14,22 +14,46 @@ class ProjectController extends Controller
     {
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         
-        $query = Project::with('jobListing');
+        $baseQuery = Project::with('jobListing');
         if ($user->role === \App\Enums\UserRole::TALENT) {
-            $query->where('talent_id', $user->id)->with('client');
+            $baseQuery->where('talent_id', $user->id)->with('client');
         } elseif ($user->role === \App\Enums\UserRole::CLIENT) {
-            $query->where('client_id', $user->id)->with('talent');
+            $baseQuery->where('client_id', $user->id)->with('talent');
+        } elseif ($user->isAdmin()) {
+            $baseQuery->with(['client', 'talent']);
         } else {
             abort(403);
         }
 
-        $projects = $query->latest()->paginate(15);
+        // Counts for status tabs
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'active' => (clone $baseQuery)->where('status', \App\Enums\ProjectStatus::ACTIVE)->count(),
+            'completed' => (clone $baseQuery)->where('status', \App\Enums\ProjectStatus::COMPLETED)->count(),
+            'cancelled' => (clone $baseQuery)->where('status', \App\Enums\ProjectStatus::CANCELLED)->count(),
+        ];
+
+        $query = clone $baseQuery;
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $projects = $query->latest()->paginate(15)->withQueryString();
         
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact('projects', 'counts'));
     }
 
     public function show(Project $project)
@@ -67,7 +91,8 @@ class ProjectController extends Controller
 
     private function authorizeParticipant(Project $project)
     {
-        if (Auth::id() !== $project->client_id && Auth::id() !== $project->talent_id) {
+        $user = Auth::user();
+        if (!$user->isAdmin() && $user->id !== $project->client_id && $user->id !== $project->talent_id) {
             abort(403, 'Unauthorized action.');
         }
     }

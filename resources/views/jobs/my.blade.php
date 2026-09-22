@@ -4,15 +4,54 @@
 
 @section('dashboard-content')
 <div class="space-y-6">
+    <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Manajemen Lowongan Pekerjaan</h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">Kelola dan pantau seluruh lowongan proyek yang Anda publikasikan.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Pantau dan kelola seluruh lowongan proyek yang Anda publikasikan untuk talenta mahasiswa.</p>
         </div>
         <a href="{{ route('jobs.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-500/20 transition-all btn-press shrink-0">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-            <span>+ Buat Lowongan Baru</span>
+            <span>+ Pasang Lowongan Baru</span>
         </a>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Status Tabs -->
+        <div class="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/80 rounded-2xl border border-slate-200/60 text-xs font-bold">
+            <a href="{{ route('jobs.my', array_filter(['search' => request('search')])) }}" 
+               class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 {{ !request('status') ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                <span>Semua</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] {{ !request('status') ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-200 text-slate-600' }}">{{ $counts['all'] ?? 0 }}</span>
+            </a>
+            <a href="{{ route('jobs.my', array_filter(['status' => 'open', 'search' => request('search')])) }}" 
+               class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 {{ request('status') === 'open' ? 'bg-white text-emerald-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Dibuka</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] {{ request('status') === 'open' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-200 text-slate-600' }}">{{ $counts['open'] ?? 0 }}</span>
+            </a>
+            <a href="{{ route('jobs.my', array_filter(['status' => 'closed', 'search' => request('search')])) }}" 
+               class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 {{ request('status') === 'closed' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                <span>Ditutup</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] {{ request('status') === 'closed' ? 'bg-rose-50 text-rose-700' : 'bg-slate-200 text-slate-600' }}">{{ $counts['closed'] ?? 0 }}</span>
+            </a>
+            <a href="{{ route('jobs.my', array_filter(['status' => 'draft', 'search' => request('search')])) }}" 
+               class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 {{ request('status') === 'draft' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                <span>Draft</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] {{ request('status') === 'draft' ? 'bg-slate-200 text-slate-700' : 'bg-slate-200 text-slate-600' }}">{{ $counts['draft'] ?? 0 }}</span>
+            </a>
+        </div>
+
+        <!-- Search Input -->
+        <form action="{{ route('jobs.my') }}" method="GET" class="relative flex-1 md:max-w-xs">
+            @if(request('status'))
+                <input type="hidden" name="status" value="{{ request('status') }}">
+            @endif
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul lowongan..." 
+                   class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 outline-none transition-all shadow-xs">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </form>
     </div>
 
     @if($jobs->isEmpty())
@@ -20,20 +59,32 @@
             <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             </div>
-            <h3 class="text-lg font-bold text-slate-900">Belum Ada Lowongan Terpasang</h3>
-            <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">Mulai cari mahasiswa dan fresh graduate berbakat dengan memasang lowongan pertama Anda.</p>
+            <h3 class="text-lg font-bold text-slate-900">Tidak Ada Lowongan Ditemukan</h3>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
+                @if(request('status') || request('search'))
+                    Tidak ada lowongan yang sesuai dengan filter atau kata kunci pencarian Anda.
+                @else
+                    Mulai jaring talenta mahasiswa berbakat dengan memasang lowongan proyek pertama Anda.
+                @endif
+            </p>
             <div class="pt-2">
-                <a href="{{ route('jobs.create') }}" class="inline-block px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-500/20">
-                    Pasang Lowongan Pertama
-                </a>
+                @if(request('status') || request('search'))
+                    <a href="{{ route('jobs.my') }}" class="inline-block px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors">
+                        Reset Filter
+                    </a>
+                @else
+                    <a href="{{ route('jobs.create') }}" class="inline-block px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-500/20">
+                        Pasang Lowongan Pertama
+                    </a>
+                @endif
             </div>
         </div>
     @else
         <div class="space-y-4">
             @foreach($jobs as $job)
-                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover flex flex-col md:flex-row md:items-center justify-between gap-5">
-                    <div class="space-y-2.5 min-w-0">
-                        <div class="flex items-center gap-2">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs card-hover flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+                    <div class="space-y-2.5 min-w-0 flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
                             @php
                                 $statusBadge = match($job->status->value ?? $job->status) {
                                     'open' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -43,10 +94,13 @@
                                 };
                             @endphp
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-bold rounded-full border {{ $statusBadge }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ ($job->status->value ?? $job->status) === 'open' ? 'bg-emerald-500' : 'bg-current' }}"></span>
+                                <span class="w-1.5 h-1.5 rounded-full {{ ($job->status->value ?? $job->status) === 'open' ? 'bg-emerald-500 animate-pulse' : 'bg-current' }}"></span>
                                 {{ ucfirst($job->status->value ?? $job->status) }}
                             </span>
                             <span class="text-xs text-slate-400">Dibuat {{ $job->created_at->format('d M Y') }}</span>
+                            @if(Auth::user()->isAdmin() && $job->client)
+                                <span class="text-xs text-slate-500">&bull; Klien: <strong class="text-slate-800">{{ $job->client->name }}</strong></span>
+                            @endif
                         </div>
 
                         <h3 class="text-lg sm:text-xl font-bold text-slate-900 hover:text-indigo-600 truncate transition-colors">
@@ -58,29 +112,31 @@
                             <span>&bull;</span>
                             <span class="font-semibold text-slate-700">{{ ucfirst($job->work_mode->value ?? $job->work_mode) }}</span>
                             <span>&bull;</span>
-                            <span class="font-bold text-emerald-600">{{ $job->applications_count }} Pelamar</span>
+                            <a href="{{ route('applications.job', $job->id) }}" class="font-bold text-emerald-600 hover:underline">
+                                {{ $job->applications_count }} Pelamar Masuk &rarr;
+                            </a>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="flex flex-wrap items-center gap-2 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
-                        <a href="{{ route('applications.job', $job->id) }}" class="px-4 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-bold rounded-xl border border-indigo-200/80 transition-colors">
+                        <a href="{{ route('applications.job', $job->id) }}" class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200/80 transition-colors">
                             Lihat Pelamar ({{ $job->applications_count }})
                         </a>
 
-                        <a href="{{ route('jobs.edit', $job->id) }}" class="px-3.5 py-2.5 bg-slate-50 text-slate-700 hover:bg-slate-100 text-xs font-bold rounded-xl border border-slate-200 transition-colors">
+                        <a href="{{ route('jobs.edit', $job->id) }}" class="px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors">
                             Edit
                         </a>
 
                         <form action="{{ route('jobs.toggle-status', $job->id) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="px-3.5 py-2.5 text-xs font-bold rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors">
-                                {{ ($job->status->value ?? $job->status) === 'open' ? 'Tutup' : 'Buka' }}
+                                {{ ($job->status->value ?? $job->status) === 'open' ? 'Tutup Lowongan' : 'Buka Lowongan' }}
                             </button>
                         </form>
 
                         @if(($job->status->value ?? $job->status) === 'draft' || $job->applications_count == 0)
-                            <form action="{{ route('jobs.destroy', $job->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus lowongan ini?');">
+                            <form action="{{ route('jobs.destroy', $job->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus lowongan pekerjaan ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="px-3 py-2 text-xs font-bold rounded-xl text-rose-600 hover:bg-rose-50 transition-colors">

@@ -46,6 +46,7 @@
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead class="bg-slate-50/70 text-slate-500 text-[11px] font-bold uppercase tracking-wider border-b border-slate-100">
                     <tr>
+                        <th class="px-5 py-4 w-16">ID</th>
                         <th class="px-6 py-4">Judul & Klien Pembuat</th>
                         <th class="px-6 py-4">Kategori & Rentang Anggaran</th>
                         <th class="px-6 py-4">Status</th>
@@ -66,6 +67,9 @@
                             };
                         @endphp
                         <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-5 py-4 font-mono font-bold text-xs text-indigo-600">
+                                #{{ $job->id }}
+                            </td>
                             <td class="px-6 py-4">
                                 <a href="{{ route('jobs.show', $job->slug) }}" target="_blank" class="font-bold text-slate-900 hover:text-indigo-600 transition-colors block">
                                     {{ $job->title }}
@@ -110,7 +114,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs sm:text-sm">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-xs sm:text-sm">
                                 Tidak ada lowongan pekerjaan yang ditemukan.
                             </td>
                         </tr>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,16 +13,53 @@ class NotificationController extends Controller
     {
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = $this->notificationService->getForUser(Auth::user());
-        return view('notifications.index', compact('notifications'));
+        $user = Auth::user();
+        $filter = $request->query('filter');
+        $notifications = $this->notificationService->getForUser($user, 15, $filter);
+        $notifications->withQueryString();
+
+        $stats = [
+            'total' => Notification::where('user_id', $user->id)->count(),
+            'unread' => Notification::where('user_id', $user->id)->whereNull('read_at')->count(),
+            'read' => Notification::where('user_id', $user->id)->whereNotNull('read_at')->count(),
+        ];
+
+        return view('notifications.index', compact('notifications', 'stats'));
+    }
+
+    public function show(string $id)
+    {
+        $user = Auth::user();
+        $notification = Notification::where('user_id', $user->id)->where('id', $id)->firstOrFail();
+
+        $notification->markAsRead();
+
+        $targetUrl = $notification->getTargetUrl();
+        if ($targetUrl) {
+            return redirect($targetUrl);
+        }
+
+        return redirect()->route('notifications.index')->with('opened_id', $id);
     }
 
     public function markAsRead(string $id)
     {
         $this->notificationService->markAsRead($id);
+        return redirect()->back()->with('success', 'Notifikasi ditandai sebagai dibaca.');
+    }
+
+    public function toggleRead(string $id)
+    {
+        $this->notificationService->toggleRead($id, Auth::user());
         return redirect()->back();
+    }
+
+    public function destroy(string $id)
+    {
+        $this->notificationService->delete($id, Auth::user());
+        return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
     }
 
     public function markAllAsRead()
@@ -49,8 +87,10 @@ class NotificationController extends Controller
                 'title' => $n->title,
                 'message' => $n->message,
                 'is_read' => !is_null($n->read_at),
+                'target_url' => $n->getTargetUrl(),
                 'time' => $n->created_at->diffForHumans(),
             ]),
         ]);
     }
 }
+

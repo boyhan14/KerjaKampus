@@ -77,7 +77,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right space-x-2">
-                                <button type="button" @click="openEdit({{ $category->id }}, '{{ addslashes($category->name) }}', '{{ addslashes($category->description ?? '') }}')" 
+                                <button type="button" @click="openEdit({{ $category->id }}, {{ json_encode($category->name) }}, {{ json_encode($category->description ?? '') }})" 
                                     class="px-3 py-1.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors border border-indigo-100">
                                     Edit
                                 </button>

@@ -48,10 +48,29 @@ class NotificationService
             ->count();
     }
 
-    public function getForUser(User $user, int $perPage = 15): LengthAwarePaginator
+    public function toggleRead(string $notificationId, User $user): void
     {
-        return Notification::where('user_id', $user->id)
-            ->latest()
-            ->paginate($perPage);
+        $notification = Notification::where('user_id', $user->id)->where('id', $notificationId)->first();
+        if ($notification) {
+            $notification->toggleRead();
+        }
+    }
+
+    public function delete(string $notificationId, User $user): void
+    {
+        Notification::where('user_id', $user->id)->where('id', $notificationId)->delete();
+    }
+
+    public function getForUser(User $user, int $perPage = 15, ?string $filter = null): LengthAwarePaginator
+    {
+        $query = Notification::where('user_id', $user->id);
+
+        if ($filter === 'unread') {
+            $query->whereNull('read_at');
+        } elseif ($filter === 'read') {
+            $query->whereNotNull('read_at');
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 }

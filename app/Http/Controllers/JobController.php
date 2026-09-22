@@ -245,11 +245,35 @@ class JobController extends Controller
         return redirect()->back()->with('success', $msg);
     }
 
-    public function myJobs()
+    public function myJobs(Request $request)
     {
-        $jobs = Auth::user()->jobListings()->withCount('applications')->latest()->paginate(12);
+        $user = Auth::user();
+        $baseQuery = $user->isAdmin() ? JobListing::query() : $user->jobListings();
 
-        return view('jobs.my', compact('jobs'));
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'open' => (clone $baseQuery)->where('status', JobStatus::OPEN)->count(),
+            'closed' => (clone $baseQuery)->where('status', JobStatus::CLOSED)->count(),
+            'draft' => (clone $baseQuery)->where('status', JobStatus::DRAFT)->count(),
+        ];
+
+        $query = clone $baseQuery;
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $jobs = $query->withCount('applications')->latest()->paginate(12)->withQueryString();
+
+        return view('jobs.my', compact('jobs', 'counts'));
     }
 
     private function authorizeOwnership(JobListing $job)

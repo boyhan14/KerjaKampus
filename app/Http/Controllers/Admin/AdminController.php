@@ -14,12 +14,17 @@ use App\Models\Review;
 use App\Models\Skill;
 use App\Models\SkillCategory;
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {}
+
     public function dashboard()
     {
         $stats = [
@@ -45,10 +50,15 @@ class AdminController extends Controller
         $query = User::query();
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('email', 'like', "%{$request->search}%")
-                    ->orWhere('username', 'like', "%{$request->search}%");
+            $search = trim($request->search);
+            $numericId = ltrim($search, '#');
+            $query->where(function ($q) use ($search, $numericId) {
+                if (is_numeric($numericId)) {
+                    $q->orWhere('id', (int) $numericId);
+                }
+                $q->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%");
             });
         }
 
@@ -69,9 +79,36 @@ class AdminController extends Controller
     {
         $request->validate(['status' => 'required|in:active,suspended,pending,rejected,flagged']);
 
-        $user->update(['status' => UserStatus::from($request->status)]);
+        $newStatus = UserStatus::from($request->status);
+        $user->update(['status' => $newStatus]);
 
-        return redirect()->back()->with('success', "Status pengguna {$user->name} berhasil diubah menjadi {$request->status}.");
+        if ($newStatus === UserStatus::SUSPENDED) {
+            $this->notificationService->send(
+                $user,
+                'account_suspended',
+                'Pemberitahuan Penangguhan Akun',
+                'Akun Anda telah disuspend oleh Administrator karena indikasi pelanggaran aturan komunitas. Silakan hubungi admin jika butuh klarifikasi.',
+                ['status' => 'suspended']
+            );
+        } elseif ($newStatus === UserStatus::ACTIVE) {
+            $this->notificationService->send(
+                $user,
+                'account_activated',
+                'Akun Anda Telah Diaktifkan Kembali',
+                'Akun Anda telah diaktifkan kembali oleh Administrator. Anda dapat menggunakan seluruh layanan platform seperti biasa.',
+                ['status' => 'active']
+            );
+        } elseif ($newStatus === UserStatus::FLAGGED) {
+            $this->notificationService->send(
+                $user,
+                'account_flagged',
+                'Peringatan Akun',
+                'Akun Anda ditandai oleh Administrator untuk peninjauan. Mohon patuhi pedoman dan kebijakan komunitas KerjaKampus.',
+                ['status' => 'flagged']
+            );
+        }
+
+        return redirect()->back()->with('success', "Status pengguna {$user->name} berhasil diubah menjadi {$request->status} dan notifikasi telah dikirimkan.");
     }
 
     public function jobs(Request $request)
@@ -79,7 +116,15 @@ class AdminController extends Controller
         $query = JobListing::with('client', 'category');
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', "%{$request->search}%");
+            $search = trim($request->search);
+            $numericId = ltrim($search, '#');
+            $query->where(function ($q) use ($search, $numericId) {
+                if (is_numeric($numericId)) {
+                    $q->orWhere('id', (int) $numericId);
+                }
+                $q->orWhere('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('status')) {
@@ -95,9 +140,38 @@ class AdminController extends Controller
     {
         $request->validate(['status' => 'required|in:draft,open,closed,suspended']);
 
-        $job->update(['status' => JobStatus::from($request->status)]);
+        $newStatus = JobStatus::from($request->status);
+        $job->update(['status' => $newStatus]);
 
-        return redirect()->back()->with('success', "Status lowongan berhasil diubah menjadi {$request->status}.");
+        if ($job->client) {
+            if ($newStatus === JobStatus::CLOSED) {
+                $this->notificationService->send(
+                    $job->client,
+                    'job_closed',
+                    'Lowongan Pekerjaan Ditutup',
+                    "Lowongan pekerjaan '{$job->title}' telah ditutup oleh Administrator.",
+                    ['job_id' => $job->id, 'status' => 'closed']
+                );
+            } elseif ($newStatus === JobStatus::SUSPENDED) {
+                $this->notificationService->send(
+                    $job->client,
+                    'job_suspended',
+                    'Lowongan Pekerjaan Ditangguhkan',
+                    "Lowongan pekerjaan '{$job->title}' ditangguhkan oleh Administrator untuk peninjauan kepatuhan.",
+                    ['job_id' => $job->id, 'status' => 'suspended']
+                );
+            } elseif ($newStatus === JobStatus::OPEN) {
+                $this->notificationService->send(
+                    $job->client,
+                    'job_opened',
+                    'Lowongan Pekerjaan Disetujui',
+                    "Lowongan pekerjaan '{$job->title}' telah disetujui dan dibuka oleh Administrator.",
+                    ['job_id' => $job->id, 'status' => 'open']
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', "Status lowongan berhasil diubah menjadi {$request->status} dan notifikasi telah dikirim ke pemilik lowongan.");
     }
 
     public function skills()
@@ -212,9 +286,46 @@ class AdminController extends Controller
 
     public function reports(Request $request)
     {
-        $reports = Report::with('reporter')->latest()->paginate(15);
+        $query = Report::with('reporter');
 
-        return view('admin.reports', compact('reports'));
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $numericId = ltrim($search, '#');
+
+            $query->where(function ($q) use ($search, $numericId) {
+                if (is_numeric($numericId)) {
+                    $q->orWhere('id', (int) $numericId)
+                      ->orWhere('target_id', (int) $numericId);
+                }
+                $q->orWhere('reason', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('reporter', function ($sub) use ($search) {
+                      $sub->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('username', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('target_type')) {
+            $query->where('target_type', $request->target_type);
+        }
+
+        if ($request->filled('status')) {
+            $statusVal = strtolower(trim($request->status));
+            $query->where('status', $statusVal);
+        }
+
+        $reports = $query->latest()->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => Report::count(),
+            'pending' => Report::where('status', 'pending')->count(),
+            'resolved' => Report::where('status', 'resolved')->count(),
+            'dismissed' => Report::where('status', 'dismissed')->count(),
+        ];
+
+        return view('admin.reports', compact('reports', 'stats'));
     }
 
     public function resolveReport(Report $report)
@@ -225,7 +336,17 @@ class AdminController extends Controller
             'resolved_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Laporan berhasil ditandai selesai.');
+        if ($report->reporter) {
+            $this->notificationService->send(
+                $report->reporter,
+                'report_resolved',
+                'Laporan Anda Telah Diselesaikan',
+                "Laporan Anda terkait {$report->target_type} #{$report->target_id} telah ditinjau dan ditindaklanjuti oleh Administrator. Terima kasih atas kontribusi Anda dalam menjaga keamanan platform.",
+                ['report_id' => $report->id, 'status' => 'resolved']
+            );
+        }
+
+        return redirect()->back()->with('success', 'Laporan berhasil ditandai selesai dan notifikasi telah dikirim ke pelapor.');
     }
 
     public function dismissReport(Report $report)
@@ -236,7 +357,28 @@ class AdminController extends Controller
             'resolved_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Laporan diabaikan.');
+        if ($report->reporter) {
+            $this->notificationService->send(
+                $report->reporter,
+                'report_dismissed',
+                'Pembaruan Status Laporan',
+                "Laporan Anda terkait {$report->target_type} #{$report->target_id} telah ditinjau oleh Administrator dan ditutup karena bukti belum mencukupi.",
+                ['report_id' => $report->id, 'status' => 'dismissed']
+            );
+        }
+
+        return redirect()->back()->with('success', 'Laporan diabaikan dan notifikasi telah dikirim ke pelapor.');
+    }
+
+    public function reopenReport(Report $report)
+    {
+        $report->update([
+            'status' => ReportStatus::PENDING,
+            'resolved_by' => null,
+            'resolved_at' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Status laporan berhasil dikembalikan ke Menunggu Tindakan (Pending).');
     }
 
     public function reviews()

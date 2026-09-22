@@ -45,4 +45,18 @@ class Report extends Model
     {
         return $this->morphTo();
     }
+
+    public function getTargetModel()
+    {
+        if ($this->target_type === 'user') {
+            return User::find($this->target_id);
+        }
+        if ($this->target_type === 'job') {
+            return JobListing::find($this->target_id);
+        }
+        if ($this->target_type === 'review') {
+            return Review::find($this->target_id);
+        }
+        return null;
+    }
 }

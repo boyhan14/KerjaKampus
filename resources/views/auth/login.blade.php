@@ -7,7 +7,7 @@
     <!-- Ambient glow -->
     <div class="absolute -top-32 left-1/3 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="max-w-md w-full space-y-6 bg-white/95 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80 relative z-10">
+    <div class="max-w-md w-full space-y-6 bg-white/95 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80 relative z-10 box-shine premium-border">
         
         <!-- Header -->
         <div class="text-center space-y-2">
@@ -71,7 +71,7 @@
             </div>
 
             <div class="pt-2">
-                <button type="submit" class="w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-md shadow-indigo-500/25 transition-all btn-press">
+                <button type="submit" class="w-full py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-xl shadow-indigo-500/25 transition-all btn-press btn-shine animate-glow-pulse">
                     Masuk ke Akun
                 </button>
             </div>

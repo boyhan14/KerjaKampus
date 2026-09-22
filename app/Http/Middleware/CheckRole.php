@@ -15,6 +15,15 @@ class CheckRole
             return redirect()->route('login');
         }
 
+        if ($request->user()->status?->value === 'suspended') {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun Anda sedang disuspend oleh Administrator.',
+            ]);
+        }
+
         $userRole = $request->user()->role instanceof UserRole 
             ? $request->user()->role->value 
             : (string) ($request->user()->role ?? 'talent');

@@ -70,7 +70,7 @@ class PortfolioController extends Controller
     {
         $portfolio = PortfolioItem::where('slug', $slug)
             ->when(is_numeric($slug), fn($q) => $q->orWhere('id', $slug))
-            ->with(['user.skills', 'skills'])
+            ->with(['user.skills', 'user.portfolioItems' => fn($q) => $q->where('is_published', true)->take(4), 'skills'])
             ->firstOrFail();
 
         if (!$portfolio->is_published && (!Auth::check() || Auth::id() !== $portfolio->user_id)) {

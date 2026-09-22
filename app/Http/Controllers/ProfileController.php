@@ -29,6 +29,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'username' => ['nullable', 'string', 'max:50', 'alpha_dash', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
             'location' => 'nullable|string|max:255',
@@ -44,6 +45,8 @@ class ProfileController extends Controller
             'company_description' => 'nullable|string',
             'is_available' => 'nullable|boolean',
         ]);
+
+        $validated['is_available'] = $request->boolean('is_available');
 
         $user->update($validated);
 

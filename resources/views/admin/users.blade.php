@@ -51,6 +51,7 @@
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead class="bg-slate-50/70 text-slate-500 text-[11px] font-bold uppercase tracking-wider border-b border-slate-100">
                     <tr>
+                        <th class="px-5 py-4 w-16">ID</th>
                         <th class="px-6 py-4">Nama & Kredensial</th>
                         <th class="px-6 py-4">Role Utama</th>
                         <th class="px-6 py-4">Status Akun</th>
@@ -65,6 +66,9 @@
                             $uStatus = $u->status->value ?? $u->status;
                         @endphp
                         <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-5 py-4 font-mono font-bold text-xs text-indigo-600">
+                                #{{ $u->id }}
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="font-bold text-slate-900">{{ $u->name }}</div>
                                 <div class="text-xs text-slate-400 mt-0.5">{{ $u->email }} &bull; {{ '@' . $u->username }}</div>
@@ -106,7 +110,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs sm:text-sm">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-xs sm:text-sm">
                                 Tidak ada pengguna yang cocok dengan kriteria pencarian.
                             </td>
                         </tr>
